@@ -88,6 +88,15 @@ ICS_G3_4K4_2026/
 
 ---
 
+## Convención de Mensajes de Commit
+
+Para mantener trazabilidad del autor y consistencia entre aportes, los mensajes de commit deben respetar el siguiente formato:
+
+`<Legajo>: <descripcion breve del cambio>`
+
+
+---
+
 ## Glosario de Abreviaturas
 
 | Abreviatura | Significado |
