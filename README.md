@@ -1,6 +1,6 @@
 # Gestión de Configuración del Software — ICS G3 4K4 2026
 
-> **Versión:** 1.0.2 | **Fecha:** 24/03/2026 | **Fecha última modificación:** 07/04/2026  
+> **Versión:** 1.0.3 | **Fecha:** 24/03/2026 | **Fecha última modificación:** 07/04/2026  
 > **Materia:** Ingeniería y Calidad de Software  
 > **Repositorio:**
 
@@ -125,6 +125,7 @@ Para mantener trazabilidad del autor y consistencia entre aportes, los mensajes 
 | `RES` | Resumen |
 | `ART` | Artefacto |
 | `PRES` | Presentación |
+| `ICS` | Ingeniería y Calidad de Software |
 
 
 ## Criterios de Línea Base
