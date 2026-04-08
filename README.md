@@ -1,10 +1,25 @@
 # Gestión de Configuración del Software — ICS G3 4K4 2026
 
-> **Versión:** 1.0.1 | **Fecha:** 24/03/2026  
+> **Versión:** 1.0.2 | **Fecha:** 24/03/2026 | **Fecha última modificación:** 07/04/2026  
 > **Materia:** Ingeniería y Calidad de Software  
 > **Repositorio:**
 
 ---
+
+## Integrantes del equipo
+
+| Apellido y Nombre | Legajo |
+|---|---|
+| Carrizo Tiziana | 94506 |
+| Crespo Santiago | 85516 |
+| Reartes Facundo | 90208 |
+| Felippa Alexis | 90843|
+| Genesir Mauro | 90090 |
+| Truenow Leonardo | 93109 |
+| Tavella Valentino | 78973 |
+| Linares Julián | 97088 |
+| Sacco Juan | 89319 |
+
 
 ## Introducción
 
@@ -110,3 +125,7 @@ Para mantener trazabilidad del autor y consistencia entre aportes, los mensajes 
 | `RES` | Resumen |
 | `ART` | Artefacto |
 | `PRES` | Presentación |
+
+
+## Criterios de Línea Base
+Definimos como críterios de línea base del repositorio, que la misma se establezca luego de la correción de dos trabajos prácticos considerando únicamente los prácticos evaluables. Esto lo decidimos ya que consideramos que es el momento correcto ya que contamos con los ítems de configuración validos y estables. Como equipo decidimos identificar a cada versión de la línea base, con nombres de planetas.
