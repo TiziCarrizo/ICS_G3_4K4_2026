@@ -1,6 +1,6 @@
 # Gestión de Configuración del Software — ICS G3 4K4 2026
 
-> **Versión:** 1.0 | **Fecha:** 24/03/2026  
+> **Versión:** 1.0.1 | **Fecha:** 24/03/2026  
 > **Materia:** Ingeniería y Calidad de Software  
 > **Repositorio:**
 
