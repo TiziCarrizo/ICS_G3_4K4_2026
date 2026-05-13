@@ -130,4 +130,10 @@ Para mantener trazabilidad del autor y consistencia entre aportes, los mensajes 
 
 
 ## Criterios de Línea Base
-Definimos como críterios de línea base del repositorio, que la misma se establezca luego de la correción de dos trabajos prácticos considerando únicamente los prácticos evaluables. Esto lo decidimos ya que consideramos que es el momento correcto ya que contamos con los ítems de configuración validos y estables. Como equipo decidimos identificar a cada versión de la línea base, con nombres de planetas.
+Definimos como críterios de línea base del repositorio, que la misma se establezca luego de la correción de dos trabajos prácticos considerando únicamente los prácticos evaluables. Esto lo decidimos ya que consideramos que es el momento correcto ya que contamos con los ítems de configuración validos y estables. Como equipo decidimos identificar a cada versión de la línea base, con nombres de planetas.Para garantizar el orden cronológico y la trazabilidad de las versiones, utilizaremos el formato LB_v<Numero>_<Planeta>, donde el número indicará la secuencia de la versión y los nombres de los planetas se asignarán según su orden de proximidad al Sol.
+Ejemplo:
+
+LB_v1.0_Mercurio (Línea Base 1)
+LB_v2.0_Venus (Línea Base 2)
+LB_v3.0_Tierra (Línea Base 3)
+
