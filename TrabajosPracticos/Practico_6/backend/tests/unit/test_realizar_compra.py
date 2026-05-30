@@ -6,10 +6,12 @@ try:
         validar_usuario_registrado,
         validar_cantidad_entradas,
         validar_fecha_visita,
-        validar_forma_pago
+        validar_forma_pago,
+        procesar_compra  
     )
+    from comprar_entradas.models import Entrada  
 except ImportError:
-    pytest.fail("Faltan definir las funciones de validación en comprar_entradas/services.py")
+    pytest.fail("Falta definir procesar_compra en services.py o el modelo Entrada en models.py")
 
 
 @pytest.fixture
@@ -64,3 +66,16 @@ def test_validar_forma_pago_rechaza_opcion_invalida():
    
     with pytest.raises(ValueError, match="Forma de pago no válida"):
         validar_forma_pago(pago_invalido)
+
+@pytest.mark.django_db
+def test_procesar_compra_exitosa_guarda_en_bd(fecha_futura):
+    # Arrange: Un diccionario con datos perfectos que superan todas las validaciones
+    datos_compra = {
+        "usuario": {"id": 100, "nombre": "Socio Activo"},
+        "cantidad": 4,
+        "fecha": fecha_futura,
+        "forma_pago": "TARJETA"
+    }
+    
+    procesar_compra(datos_compra)
+    assert Entrada.objects.count() == 1
