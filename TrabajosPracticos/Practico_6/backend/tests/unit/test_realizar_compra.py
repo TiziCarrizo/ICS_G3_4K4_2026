@@ -3,17 +3,14 @@ from datetime import date, timedelta
 
 try:
     from comprar_entradas.services import (
-        validar_usuario_registrado,
-        validar_cantidad_entradas,
-        validar_fecha_visita,
-        validar_forma_pago,
-        procesar_compra  
+        validar_usuario_registrado, validar_cantidad_entradas,
+        validar_fecha_visita, validar_forma_pago, procesar_compra
     )
-    # Importamos ambos modelos nuevos
-    from comprar_entradas.models import Compra, Entrada  
-except ImportError:
-    pytest.fail("Falta definir las funciones en services.py o los modelos en models.py")
 
+    from comprar_entradas.models import Compra, Entrada, Usuario, FormaPago, TipoEntrada
+except ImportError:
+    import pytest
+    pytest.fail("RED: Faltan definir los nuevos modelos normalizados en models.py")
 
 @pytest.fixture
 def fecha_futura():
@@ -57,23 +54,28 @@ def test_validar_forma_pago_rechaza_opcion_invalida():
 # --- TEST DEL CAMINO FELIZ (CON LOOP Y RELACIÓN 1 a N) ---
 
 @pytest.mark.django_db
-def test_procesar_compra_exitosa_guarda_en_bd(fecha_futura):
-    # Arrange: Enviamos una lista de entradas con edad y tipo de pase
+def test_procesar_compra_exitosa_guarda_con_esquema_completo(fecha_futura):
+    # Arrange: Simulamos que en la BD ya existen estos registros básicos
+    usuario_real = Usuario.objects.create(nombre="Alexis", apellido="G", email="alexis@test.com")
+    forma_tarjeta = FormaPago.objects.create(nombre="TARJETA")
+    tipo_vip = TipoEntrada.objects.create(nombre="VIP")
+    tipo_regular = TipoEntrada.objects.create(nombre="REGULAR")
+   
     datos_compra = {
-        "usuario": {"id": 100, "nombre": "Socio Activo"},
+        "usuario": {"id": usuario_real.id, "nombre": usuario_real.nombre},
         "fecha": fecha_futura,
         "forma_pago": "TARJETA",
         "entradas": [
-            {"edad": 25, "tipo_pase": "VIP"},
-            {"edad": 12, "tipo_pase": "REGULAR"},
-            {"edad": 45, "tipo_pase": "VIP"}
+            {"edad": 25, "tipo_pase": "VIP", "precio_unitario": 5000.0},
+            {"edad": 12, "tipo_pase": "REGULAR", "precio_unitario": 2500.0}
         ]
     }
     
-    procesar_compra(datos_compra)
+    # Act
+    compra_procesada = procesar_compra(datos_compra)
     
     assert Compra.objects.count() == 1
-    assert Entrada.objects.count() == 3
-    
-    compra_guardada = Compra.objects.first()
-    assert compra_guardada.entradas.count() == 3
+    assert Entrada.objects.count() == 2
+    assert compra_procesada.cantidad_entradas == 2
+    assert compra_procesada.monto_total == 7500.0 
+    assert compra_procesada.usuario == usuario_real
