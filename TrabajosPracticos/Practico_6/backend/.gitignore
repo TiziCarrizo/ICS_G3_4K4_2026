@@ -1,0 +1,14 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Caché de Python y Pytest
+__pycache__/
+*.pyc
+.pytest_cache/
+
+
+db.sqlite3
+
+.env
