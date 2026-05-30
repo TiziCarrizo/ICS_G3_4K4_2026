@@ -1,31 +1,45 @@
-# comprar_entradas/services.py
 from django.db import transaction
-from .models import Compra, Entrada
+from .models import Compra, Entrada, Usuario, FormaPago, TipoEntrada
 from .validators import (
     validar_usuario_registrado, validar_cantidad_entradas,
     validar_fecha_visita, validar_forma_pago
 )
 
 def procesar_compra(datos):
-    
+    # 1. Validaciones de negocio puras
     validar_usuario_registrado(datos.get("usuario"))
     validar_cantidad_entradas(datos.get("entradas"))
     validar_fecha_visita(datos.get("fecha"))
     validar_forma_pago(datos.get("forma_pago"))
     
-    # 2. Transacción atómica: blindamos la base de datos
+    # 2. Buscar las entidades reales en la BD
+    usuario = Usuario.objects.get(id=datos["usuario"]["id"])
+    forma_pago = FormaPago.objects.get(nombre=datos["forma_pago"])
+    
+    entradas_data = datos.get("entradas", [])
+    cantidad = len(entradas_data)
+    
+    # Calculamos el monto total sumando los precios unitarios
+    monto_total = sum(item["precio_unitario"] for item in entradas_data)
+    
+    # 3. Transacción atómica para guardar todo junto
     with transaction.atomic():
         nueva_compra = Compra.objects.create(
-            usuario_id=datos["usuario"]["id"],
-            fecha_visita=datos["fecha"],
-            forma_pago=datos["forma_pago"]
+            usuario=usuario,
+            fecha=datos["fecha"],
+            cantidad_entradas=cantidad,
+            monto_total=monto_total,
+            forma_pago=forma_pago,
+            mercado_pago_redirect_url=None
         )
         
-        for entrada_data in datos.get("entradas", []):
+        for item in entradas_data:
+            tipo_entrada = TipoEntrada.objects.get(nombre=item["tipo_pase"])
             Entrada.objects.create(
                 compra=nueva_compra,
-                edad=entrada_data["edad"],
-                tipo_pase=entrada_data["tipo_pase"]
+                edad=item["edad"],
+                tipo_entrada=tipo_entrada,
+                precio_unitario=item["precio_unitario"]
             )
             
     return nueva_compra
