@@ -2,8 +2,8 @@
 <header class="header">
     <h1>EcoHarmony Park</h1>
     <nav>
-        <a routerLink="/"><i class="fas fa-house-chimney"></i> Inicio</a>
-        <a routerLink="/exhibiciones"><i class="fas fa-ticket"></i> Comprar Entradas</a>
+         <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+        <a routerLink="/comprar-entrada" routerLinkActive="active">Comprar Entradas</a>
         <a routerLink="/senderos"><i class="fas fa-shopping-cart"></i> Mis compras</a>
     </nav>
     <div class="user-info">
