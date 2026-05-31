@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MainLayout } from './main-layout';
+import { MOCK_USER } from '../../app';
 
 describe('MainLayout', () => {
   let component: MainLayout;
@@ -19,4 +20,10 @@ describe('MainLayout', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('deberia mostrar el titulo EcoHarmony Park', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).toContain('EcoHarmony Park');
+});
 });
