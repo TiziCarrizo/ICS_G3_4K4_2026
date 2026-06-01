@@ -1,7 +1,14 @@
 import { Component, OnInit, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { CompraService, EntradaItem, CompraResponse, UsuarioApi } from '../../services/compra.service';
+import { Router } from '@angular/router';
+import { PagoTemporalService } from '../../services/formas-pago/pago-temporal.service';import {
+  CompraService,
+  EntradaItem,
+  CompraResponse,
+  UsuarioApi,
+  CompraRequest
+} from '../../services/compra.service';
 
 @Component({
   selector: 'app-comprar-entrada',
@@ -9,6 +16,7 @@ import { CompraService, EntradaItem, CompraResponse, UsuarioApi } from '../../se
   templateUrl: './comprar-entrada.html',
   styleUrl: './comprar-entrada.scss',
 })
+
 export class ComprarEntrada implements OnInit {
   usuarios = signal<UsuarioApi[]>([]);
   usuarioId = signal<number | null>(null);
@@ -42,7 +50,11 @@ export class ComprarEntrada implements OnInit {
 
   montoTotal = computed(() => this.entradas().reduce((sum, e) => sum + e.precio_unitario, 0));
 
-  constructor(private compraService: CompraService) {}
+  constructor(
+  private compraService: CompraService,
+  private pagoTemporalService: PagoTemporalService,
+  private router: Router
+) {}
 
   ngOnInit() {
     this.compraService.getUsuarios().subscribe({
@@ -117,22 +129,37 @@ export class ComprarEntrada implements OnInit {
 
     this.cargando.set(true);
 
-    this.compraService.realizarCompra({
-      usuario: { id: this.usuarioSeleccionado()!.id },
-      fecha: this.fecha(),
-      forma_pago: this.formaPago() as 'TARJETA' | 'EFECTIVO',
-      entradas: this.entradas(),
-      email_confirmacion: this.emailConfirmacion(),
-    }).subscribe({
-      next: (res) => {
-        this.cargando.set(false);
-        this.resultado.set(res);
-      },
-      error: (err) => {
-        this.cargando.set(false);
-        this.error.set(err.error?.error ?? 'Error al procesar la compra.');
-      }
-    });
+  const compra: CompraRequest = {
+  usuario: { id: this.usuarioSeleccionado()!.id },
+  fecha: this.fecha(),
+  forma_pago: this.formaPago() as 'TARJETA' | 'EFECTIVO',
+  entradas: this.entradas(),
+  email_confirmacion: this.emailConfirmacion(),
+};
+
+if (this.formaPago() === 'TARJETA') {
+
+ this.pagoTemporalService.compraPendiente = compra;
+
+this.router.navigate(['/mercado-pago']);
+
+
+  return;
+}
+
+this.cargando.set(true);
+
+this.compraService.realizarCompra(compra)
+  .subscribe({
+    next: (res) => {
+      this.cargando.set(false);
+      this.resultado.set(res);
+    },
+    error: (err) => {
+      this.cargando.set(false);
+      this.error.set(err.error?.error ?? 'Error al procesar la compra.');
+    }
+  });
   }
 
   nuevaCompra() {
