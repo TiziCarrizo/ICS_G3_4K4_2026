@@ -90,7 +90,7 @@ def test_validar_tipo_pase_acepta_vip_y_regular():
 
 
 def test_validar_datos_visitantes_acepta_edad_cero():
-    # Edad 0 es válida (bebé, no paga)
+    # Edad 0 es válida (bebé no paga)
     entradas_validas = [{"edad": 0, "tipo_pase": "REGULAR", "precio_unitario": 10000}]
     validar_datos_visitantes(entradas_validas)  # no debe lanzar excepción
 
