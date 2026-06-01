@@ -109,7 +109,7 @@ export class ComprarEntrada {
             this.visitantes.clear();
 
         } catch (error) {
-            this.handleSubmitError(error);
+            await this.handleSubmitError(error);
         } finally {
             this.isSubmitting = false;
         }
@@ -135,7 +135,7 @@ export class ComprarEntrada {
                 };
             });
 
-            return {
+            const payload = {
                 usuario: {
                     id: MOCK_USER.id,
                     nombre: `${MOCK_USER.nombre} ${MOCK_USER.apellido}`
@@ -144,20 +144,23 @@ export class ComprarEntrada {
                 forma_pago: formaPagoNombre,
                 entradas
             };
+
+            console.log('Payload enviado:', JSON.stringify(payload, null, 2)); // ← nuevo
+            return payload;
         }
 
         private getTipoPaseNombre(id: number): string {
-            return this.tiposPase.find((tp) => tp.id === id)?.nombre ?? '';
+            return this.tiposPase.find((tp) => tp.id === Number(id))?.nombre ?? '';
         }
 
         private getFormaPagoNombre(id: number): string {
-            return this.formasPago.find((fp) => fp.id === id)?.nombre ?? '';
+            return this.formasPago.find((fp) => fp.id === Number(id))?.nombre ?? '';
         }
 
         private getPrecioUnitario(tipoPaseNombre: string): number {
             const priceMap: Record<string, number> = {
-                VIP: 5000,
-                Regular: 3000
+                VIP: 5000.0,
+                Regular: 3000.0
             };
 
             return priceMap[tipoPaseNombre] ?? 0;
@@ -196,7 +199,7 @@ export class ComprarEntrada {
       
       // Validar que la fecha seleccionada no sea anterior a hoy
       if (fechaSeleccionada < hoy) {
-            return { fechaInvalida: true }; // Retorna un error de validación si la fecha es anterior a hoy
+            return { fechaPasada: true }; // Retorna un error de validación si la fecha es anterior a hoy
           }
 
       // Validar que no sea domingo (1 = Monday, ...)
