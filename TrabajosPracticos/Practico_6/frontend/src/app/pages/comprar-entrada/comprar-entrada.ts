@@ -110,7 +110,7 @@ export class ComprarEntrada implements OnInit {
       this.error.set('Ingresá un email válido para recibir la confirmación.');
       return;
     }
-    if (this.entradas().some(e => !e.edad || e.edad <= 0)) {
+    if (this.entradas().some(e => e.edad < 0)) {
       this.error.set('Ingresá la edad de todos los visitantes.');
       return;
     }

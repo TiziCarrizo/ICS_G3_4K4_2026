@@ -190,3 +190,30 @@ $white: #ffffff;
     &:hover { opacity: 0.9; }
   }
 }
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 600px) {
+  .mis-compras-container {
+    padding: 20px 12px;
+  }
+
+  .page-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .compra-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .compra-detalle {
+    gap: 14px;
+  }
+
+  .mp-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

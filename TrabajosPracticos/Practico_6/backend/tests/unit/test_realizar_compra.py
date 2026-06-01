@@ -217,3 +217,38 @@ def test_procesar_compra_envia_mail_confirmacion(fecha_futura, mailoutbox):
     assert fecha_futura.strftime('%d/%m/%Y') in mailoutbox[0].body  # formato dd/mm/YYYY
     assert str(compra.cantidad_entradas) in mailoutbox[0].body
     assert "EcoHarmony Park" in mailoutbox[0].subject
+
+
+# --- TESTS DE MIS COMPRAS (GET /api/mis-compras/) ---
+
+@pytest.mark.django_db
+def test_mis_compras_retorna_historial_del_usuario(fecha_futura):
+    from django.test import Client
+    usuario = Usuario.objects.create(nombre="Carlos", apellido="T", email="carlos@test.com")
+    FormaPago.objects.create(nombre="EFECTIVO")
+    TipoEntrada.objects.create(nombre="REGULAR")
+
+    procesar_compra({
+        "usuario": {"id": usuario.id},
+        "fecha": fecha_futura,
+        "forma_pago": "EFECTIVO",
+        "entradas": [{"edad": 25, "tipo_pase": "REGULAR", "precio_unitario": 10000.0}],
+    })
+
+    client = Client()
+    response = client.get(f"/api/mis-compras/?usuario_id={usuario.id}")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["cantidad_entradas"] == 1
+    assert data[0]["forma_pago"] == "EFECTIVO"
+    assert len(data[0]["entradas"]) == 1
+
+
+@pytest.mark.django_db
+def test_mis_compras_sin_usuario_id_retorna_error():
+    from django.test import Client
+    client = Client()
+    response = client.get("/api/mis-compras/")
+    assert response.status_code == 400

@@ -314,3 +314,40 @@ $shadow-lg: 0 10px 15px 0 rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
   &:hover { background: $primary-green; color: $white; border-color: $primary-green; }
 }
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 600px) {
+  .comprar-container {
+    padding: 16px 10px;
+  }
+
+  .form-card, .resultado-card {
+    padding: 22px 16px;
+    border-radius: 10px;
+
+    h2 { font-size: 1.4rem; }
+  }
+
+  .radio-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .entrada-row {
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .entrada-field { flex: 1 1 calc(50% - 20px); }
+  }
+
+  .resultado-detalle {
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .btn-confirmar, .btn-secundario {
+    font-size: 0.95rem;
+    padding: 12px;
+  }
+}
