@@ -1,0 +1,221 @@
+// Variables
+$primary-green: #10b981;
+$secondary-blue: #0ea5e9;
+$accent-gold: #f59e0b;
+$error-red: #ef4444;
+$dark-text: #1f2937;
+$light-bg: #f9fafb;
+$border-gray: #e5e7eb;
+$white: #ffffff;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px 0 rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px 0 rgba(0, 0, 0, 0.1);
+$transition: all 0.3s ease;
+
+// Styles
+form.form-card {
+  background: $white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: $shadow-lg;
+  max-width: 500px;
+  width: 100%;
+  margin: 40px auto;
+  animation: slideInUp 0.6s ease-out;
+  border: 1px solid $border-gray;
+
+  @media (max-width: 768px) {
+    padding: 24px;
+    margin: 20px auto;
+    max-width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  h1 {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: $dark-text;
+    margin-bottom: 32px;
+    text-align: center;
+    background: linear-gradient(135deg, $primary-green 0%, $secondary-blue 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: slideInDown 0.6s ease-out;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+      margin-bottom: 24px;
+    }
+  }
+
+  label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: $dark-text;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    transition: $transition;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+
+    &:hover {
+      color: $primary-green;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+      margin-top: 16px;
+    }
+  }
+
+  input[type='date'],
+  input[type='number'] {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    border: 2px solid $border-gray;
+    border-radius: 8px;
+    background-color: $light-bg;
+    color: $dark-text;
+    transition: $transition;
+    box-sizing: border-box;
+    font-family: inherit;
+    margin-bottom: 12px;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-green;
+      background-color: $white;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    &:hover:not(:focus) {
+      border-color: #d1d5db;
+    }
+
+    @media (max-width: 768px) {
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+  }
+
+  small.error {
+    display: block;
+    min-height: 24px;
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+    color: $error-red;
+    font-weight: 500;
+    animation: slideInDown 0.3s ease-out;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      &::before {
+        content: '⚠';
+        font-weight: bold;
+      }
+    }
+
+    @media (max-width: 768px) {
+      font-size: 0.8rem;
+      min-height: 20px;
+      margin-bottom: 16px;
+    }
+  }
+
+  button[type='submit'] {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, $primary-green 0%, $secondary-blue 100%);
+    color: $white;
+    cursor: pointer;
+    transition: $transition;
+    box-shadow: $shadow-md;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 16px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: $transition;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px 0 rgba(16, 185, 129, 0.3);
+      background: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 5px 10px 0 rgba(16, 185, 129, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+
+      &:hover {
+        transform: none;
+        box-shadow: $shadow-md;
+      }
+    }
+
+    @media (max-width: 768px) {
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      margin-top: 12px;
+    }
+  }
+}
+
+// Animations
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
