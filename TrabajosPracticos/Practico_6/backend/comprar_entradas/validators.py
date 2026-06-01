@@ -18,3 +18,12 @@ def validar_fecha_visita(fecha):
 def validar_forma_pago(forma_pago):
     if forma_pago not in ["EFECTIVO", "TARJETA"]:
         raise ValueError("Forma de pago no válida")
+
+def validar_tipo_pase(tipo_pase):
+    if tipo_pase not in ["VIP", "REGULAR"]:
+        raise ValueError("Tipo de pase no válido")
+
+def validar_datos_visitantes(entradas):
+    for entrada in entradas:
+        if "edad" not in entrada or not isinstance(entrada["edad"], (int, float)) or entrada["edad"] <= 0:
+            raise ValueError("La edad de cada visitante es obligatoria y debe ser mayor a 0")

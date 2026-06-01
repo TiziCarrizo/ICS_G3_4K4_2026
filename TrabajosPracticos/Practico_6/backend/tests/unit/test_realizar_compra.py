@@ -6,6 +6,7 @@ try:
         validar_usuario_registrado, validar_cantidad_entradas,
         validar_fecha_visita, validar_forma_pago, procesar_compra
     )
+    from comprar_entradas.validators import validar_tipo_pase, validar_datos_visitantes
 
     from comprar_entradas.models import Compra, Entrada, Usuario, FormaPago, TipoEntrada
 except ImportError:
@@ -51,6 +52,28 @@ def test_validar_forma_pago_rechaza_opcion_invalida():
         validar_forma_pago(pago_invalido)
 
 
+def test_validar_tipo_pase_rechaza_tipo_invalido():
+    with pytest.raises(ValueError, match="Tipo de pase no válido"):
+        validar_tipo_pase("PREMIUM")
+
+
+def test_validar_tipo_pase_acepta_vip_y_regular():
+    validar_tipo_pase("VIP")      # no lanza excepción
+    validar_tipo_pase("REGULAR")  # no lanza excepción
+
+
+def test_validar_datos_visitantes_rechaza_edad_cero():
+    entradas_invalidas = [{"edad": 0, "tipo_pase": "REGULAR", "precio_unitario": 2500}]
+    with pytest.raises(ValueError, match="La edad de cada visitante es obligatoria"):
+        validar_datos_visitantes(entradas_invalidas)
+
+
+def test_validar_datos_visitantes_rechaza_sin_campo_edad():
+    entradas_invalidas = [{"tipo_pase": "VIP", "precio_unitario": 5000}]
+    with pytest.raises(ValueError, match="La edad de cada visitante es obligatoria"):
+        validar_datos_visitantes(entradas_invalidas)
+
+
 # --- TEST DEL CAMINO FELIZ (CON LOOP Y RELACIÓN 1 a N) ---
 
 @pytest.mark.django_db
@@ -79,3 +102,62 @@ def test_procesar_compra_exitosa_guarda_con_esquema_completo(fecha_futura):
     assert compra_procesada.cantidad_entradas == 2
     assert compra_procesada.monto_total == 7500.0 
     assert compra_procesada.usuario == usuario_real
+
+
+# --- TESTS DE MERCADO PAGO ---
+
+@pytest.mark.django_db
+def test_procesar_compra_con_tarjeta_genera_url_mercado_pago(fecha_futura):
+    usuario = Usuario.objects.create(nombre="Ana", apellido="P", email="ana@test.com")
+    FormaPago.objects.create(nombre="TARJETA")
+    TipoEntrada.objects.create(nombre="REGULAR")
+
+    datos = {
+        "usuario": {"id": usuario.id},
+        "fecha": fecha_futura,
+        "forma_pago": "TARJETA",
+        "entradas": [{"edad": 25, "tipo_pase": "REGULAR", "precio_unitario": 2500.0}]
+    }
+    compra = procesar_compra(datos)
+
+    assert compra.mercado_pago_redirect_url is not None
+    assert str(compra.id) in compra.mercado_pago_redirect_url
+
+
+@pytest.mark.django_db
+def test_procesar_compra_con_efectivo_no_tiene_url_mercado_pago(fecha_futura):
+    usuario = Usuario.objects.create(nombre="Luis", apellido="Q", email="luis@test.com")
+    FormaPago.objects.create(nombre="EFECTIVO")
+    TipoEntrada.objects.create(nombre="REGULAR")
+
+    datos = {
+        "usuario": {"id": usuario.id},
+        "fecha": fecha_futura,
+        "forma_pago": "EFECTIVO",
+        "entradas": [{"edad": 30, "tipo_pase": "REGULAR", "precio_unitario": 2500.0}]
+    }
+    compra = procesar_compra(datos)
+
+    assert compra.mercado_pago_redirect_url is None
+
+
+# --- TEST DE MAIL DE CONFIRMACIÓN ---
+
+@pytest.mark.django_db
+def test_procesar_compra_envia_mail_confirmacion(fecha_futura, mailoutbox):
+    usuario = Usuario.objects.create(nombre="María", apellido="R", email="maria@test.com")
+    FormaPago.objects.create(nombre="EFECTIVO")
+    TipoEntrada.objects.create(nombre="REGULAR")
+
+    datos = {
+        "usuario": {"id": usuario.id},
+        "fecha": fecha_futura,
+        "forma_pago": "EFECTIVO",
+        "entradas": [{"edad": 25, "tipo_pase": "REGULAR", "precio_unitario": 2500.0}]
+    }
+    compra = procesar_compra(datos)
+
+    assert len(mailoutbox) == 1
+    assert "maria@test.com" in mailoutbox[0].to
+    assert str(fecha_futura) in mailoutbox[0].body
+    assert str(compra.cantidad_entradas) in mailoutbox[0].body

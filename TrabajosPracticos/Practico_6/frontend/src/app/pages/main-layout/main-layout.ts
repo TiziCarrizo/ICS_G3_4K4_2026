@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { MOCK_USER } from '../../app';
+import { CompraService } from '../../services/compra.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -10,6 +10,5 @@ import { MOCK_USER } from '../../app';
   styleUrl: './main-layout.scss',
 })
 export class MainLayout {
-  protected mockUser = MOCK_USER;
-
+  constructor(protected compraService: CompraService) {}
 }

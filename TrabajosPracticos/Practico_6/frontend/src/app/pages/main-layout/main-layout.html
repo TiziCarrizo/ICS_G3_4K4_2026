@@ -8,7 +8,7 @@
     </nav>
     <div class="user-info">
         <i class="fas fa-circle-user user-icon"></i>
-        <span>{{ mockUser.nombre }} {{ mockUser.apellido }}</span>
+        <span>{{ compraService.usuarioActivo()?.nombre ?? 'Invitado' }} {{ compraService.usuarioActivo()?.apellido ?? '' }}</span>
     </div>
 </header>
 

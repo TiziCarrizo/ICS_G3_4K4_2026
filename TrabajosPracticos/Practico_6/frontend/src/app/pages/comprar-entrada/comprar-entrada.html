@@ -1,1 +1,122 @@
-<p>comprar-entrada works!</p>
+<div class="comprar-container">
+
+  <!-- RESULTADO EXITOSO -->
+  @if (resultado()) {
+    <div class="resultado-card">
+      <div class="resultado-icon">✓</div>
+      <h2>¡Compra confirmada!</h2>
+      <p>Se envió un mail de confirmación a <strong>{{ usuarioSeleccionado()?.email }}</strong></p>
+      <div class="resultado-detalle">
+        <div class="detalle-item">
+          <span class="label">Entradas</span>
+          <span class="valor">{{ resultado()!.cantidad_entradas }}</span>
+        </div>
+        <div class="detalle-item">
+          <span class="label">Fecha de visita</span>
+          <span class="valor">{{ resultado()!.fecha }}</span>
+        </div>
+        <div class="detalle-item">
+          <span class="label">Total</span>
+          <span class="valor">${{ resultado()!.monto_total | number }}</span>
+        </div>
+      </div>
+
+      @if (resultado()!.mercado_pago_redirect_url) {
+        <div class="mercadopago-box">
+          <p>Tu pago es con tarjeta. Completá el pago en Mercado Pago:</p>
+          <a [href]="resultado()!.mercado_pago_redirect_url" target="_blank" class="btn-mercadopago">
+            Ir a Mercado Pago →
+          </a>
+        </div>
+      }
+
+      <button class="btn-secundario" (click)="nuevaCompra()">Hacer otra compra</button>
+    </div>
+
+  } @else {
+
+    <!-- FORMULARIO -->
+    <div class="form-card">
+      <h2>Comprar Entradas</h2>
+
+      @if (error()) {
+        <div class="error-banner">{{ error() }}</div>
+      }
+
+      <!-- Usuario -->
+      <div class="form-group">
+        <label for="usuario">Usuario</label>
+        <select id="usuario" name="usuario" [ngModel]="usuarioId()" (ngModelChange)="onUsuarioChange($event)">
+          @for (u of usuarios(); track u.id) {
+            <option [value]="u.id">{{ u.nombre }} {{ u.apellido }} — {{ u.email }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Fecha -->
+      <div class="form-group">
+        <label for="fecha">Fecha de visita</label>
+        <input id="fecha" type="date" [ngModel]="fecha()" (ngModelChange)="fecha.set($event)" name="fecha" />
+      </div>
+
+      <!-- Forma de pago -->
+      <div class="form-group">
+        <label>Forma de pago</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" [ngModel]="formaPago()" (ngModelChange)="formaPago.set($event)" name="formaPago" value="EFECTIVO" />
+            Efectivo en boletería
+          </label>
+          <label class="radio-label">
+            <input type="radio" [ngModel]="formaPago()" (ngModelChange)="formaPago.set($event)" name="formaPago" value="TARJETA" />
+            Tarjeta (Mercado Pago)
+          </label>
+        </div>
+      </div>
+
+      <!-- Entradas -->
+      <div class="entradas-section">
+        <div class="entradas-header">
+          <label>Entradas (máx. 10)</label>
+          <button type="button" class="btn-agregar" (click)="agregarEntrada()" [disabled]="entradas().length >= 10">
+            + Agregar entrada
+          </button>
+        </div>
+
+        @for (entrada of entradas(); track $index) {
+          <div class="entrada-row">
+            <span class="entrada-num">{{ $index + 1 }}</span>
+            <div class="entrada-field">
+              <label>Edad</label>
+              <input type="number" [ngModel]="entrada.edad" (ngModelChange)="updateEdad($index, $event)" [name]="'edad_' + $index" min="1" placeholder="Edad" />
+            </div>
+            <div class="entrada-field">
+              <label>Tipo de pase</label>
+              <select [ngModel]="entrada.tipo_pase" [name]="'tipo_' + $index"
+                      (ngModelChange)="onTipoPaseChange($index, $event)">
+                <option value="REGULAR">Regular — $2.500</option>
+                <option value="VIP">VIP — $5.000</option>
+              </select>
+            </div>
+            <div class="entrada-precio">${{ entrada.precio_unitario | number }}</div>
+            @if (entradas().length > 1) {
+              <button type="button" class="btn-quitar" (click)="quitarEntrada($index)">✕</button>
+            }
+          </div>
+        }
+
+        <div class="total-row">
+          <span>Total</span>
+          <span class="total-valor">${{ montoTotal() | number }}</span>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn-confirmar" (click)="confirmarCompra()" [disabled]="cargando()">
+        @if (cargando()) { Procesando... } @else { Confirmar compra }
+      </button>
+    </div>
+  }
+
+</div>
+
