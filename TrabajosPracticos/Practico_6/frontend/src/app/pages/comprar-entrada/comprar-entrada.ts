@@ -8,6 +8,7 @@ import { FormaPago, FormasPagoDb } from '../../services/formas-pago/formas-pago-
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { MOCK_USER } from '../../app';
+import { PagoTemporalService } from '../../services/formas-pago/pago-temporal.service';
 
 
 
@@ -39,14 +40,15 @@ export class ComprarEntrada {
     mockUser = MOCK_USER;
   // Aquí puedes definir las propiedades y método necesarios para tu componente
   constructor(
-        private fb: FormBuilder,
-        private tiposPaseDb: TiposPaseDb,
-        private formasPagoDb: FormasPagoDb,
-        private httpClient: HttpClient,
-        private router: Router
-    ) {
-        this.form = this.buildForm();
-    }
+  private fb: FormBuilder,
+  private tiposPaseDb: TiposPaseDb,
+  private formasPagoDb: FormasPagoDb,
+  private httpClient: HttpClient,
+  private router: Router,
+  private pagoTemporal: PagoTemporalService
+) {
+  this.form = this.buildForm();
+}
 
         ngOnInit() {
             return;
@@ -79,42 +81,69 @@ export class ComprarEntrada {
     // Método para manejar el envío del formulario
         // Reemplazá el submitForm() completo
     async submitForm() {
-        if (this.form.invalid) {
-            this.form.markAllAsTouched();
-            return;
-        }
-
-        this.isSubmitting = true;
-        this.submitError = '';
-
-        const payload = this.buildCompraPayload();
-
-        try {
-            const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-            await firstValueFrom(
-                this.httpClient.post(`${this.apiBaseUrl}/api/compras/`, payload, { headers })
-            );
-
-            this.modalData = {
-                cantidad: this.visitantes.length,
-                fecha: this.form.get('fechaVisita')?.value,
-                total: this.visitantes.controls.reduce((acc, ctrl) => {
-                    const tipoPaseNombre = this.getTipoPaseNombre(Number(ctrl.get('tipoPase')?.value));
-                    const edad = Number(ctrl.get('edad')?.value);
-                    return acc + this.getPrecioUnitario(tipoPaseNombre, edad);
-                }, 0)
-            };
-
-            this.showModal = true;
-            this.form.reset();
-            this.visitantes.clear();
-
-        } catch (error) {
-            await this.handleSubmitError(error);
-        } finally {
-            this.isSubmitting = false;
-        }
+    if (this.form.invalid) {
+        this.form.markAllAsTouched();
+        return;
     }
+
+    this.isSubmitting = true;
+    this.submitError = '';
+
+    const payload = this.buildCompraPayload();
+
+    const formaPagoId = Number(this.form.get('formaPago')?.value);
+    const formaPagoNombre = this.getFormaPagoNombre(formaPagoId);
+
+    if (formaPagoNombre === 'TARJETA') {
+
+        this.pagoTemporal.compraPendiente = payload;
+
+        this.router.navigate(['/mercado-pago']);
+
+        this.isSubmitting = false;
+
+        return;
+    }
+
+    try {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+
+        await firstValueFrom(
+            this.httpClient.post(
+                `${this.apiBaseUrl}/api/compras/`,
+                payload,
+                { headers }
+            )
+        );
+
+        this.modalData = {
+            cantidad: this.visitantes.length,
+            fecha: this.form.get('fechaVisita')?.value,
+            total: this.visitantes.controls.reduce((acc, ctrl) => {
+                const tipoPaseNombre = this.getTipoPaseNombre(
+                    Number(ctrl.get('tipoPase')?.value)
+                );
+                const edad = Number(ctrl.get('edad')?.value);
+
+                return acc + this.getPrecioUnitario(
+                    tipoPaseNombre,
+                    edad
+                );
+            }, 0)
+        };
+
+        this.showModal = true;
+        this.form.reset();
+        this.visitantes.clear();
+
+    } catch (error) {
+        await this.handleSubmitError(error);
+    } finally {
+        this.isSubmitting = false;
+    }
+}
 
         cerrarModal() {
             this.showModal = false;
