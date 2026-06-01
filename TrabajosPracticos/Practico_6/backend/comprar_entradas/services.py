@@ -18,18 +18,17 @@ def procesar_compra(datos):
     for entrada in datos.get("entradas", []):
         validar_tipo_pase(entrada.get("tipo_pase", ""))
     validar_datos_visitantes(datos.get("entradas", []))
-    
-    # 2. Buscar las entidades reales en la BD
+
+    # 2. Buscar entidades en la BD
     usuario = Usuario.objects.get(id=datos["usuario"]["id"])
     forma_pago = FormaPago.objects.get(nombre=datos["forma_pago"])
-    
+
     entradas_data = datos.get("entradas", [])
     cantidad = len(entradas_data)
-    
-    # Calculamos el monto total sumando los precios unitarios
     monto_total = sum(item["precio_unitario"] for item in entradas_data)
-    
-    # 3. Transacción atómica para guardar todo junto
+
+    # 3. Guardar en BD
+
     with transaction.atomic():
         nueva_compra = Compra.objects.create(
             usuario=usuario,
