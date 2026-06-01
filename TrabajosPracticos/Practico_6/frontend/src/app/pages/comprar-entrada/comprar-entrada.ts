@@ -34,6 +34,9 @@ export class ComprarEntrada {
     submitError = '';
     submitSuccess = '';
     private apiBaseUrl = 'http://127.0.0.1:8000';
+    showModal = false;
+    modalData = { cantidad: 0, fecha: '', total: 0 };
+    mockUser = MOCK_USER;
   // Aquí puedes definir las propiedades y método necesarios para tu componente
   constructor(
         private fb: FormBuilder,
@@ -74,36 +77,47 @@ export class ComprarEntrada {
       }
 
     // Método para manejar el envío del formulario
-        async submitForm() {
-            if (this.form.invalid) {
-                this.form.markAllAsTouched();
-                return;
-            }
+        // Reemplazá el submitForm() completo
+    async submitForm() {
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
+            return;
+        }
 
-            this.isSubmitting = true;
-            this.submitError = '';
-            this.submitSuccess = '';
+        this.isSubmitting = true;
+        this.submitError = '';
 
-            const payload = this.buildCompraPayload();
+        const payload = this.buildCompraPayload();
 
-            try {
-                const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-                await firstValueFrom(
-                    this.httpClient.post(
-                        `${this.apiBaseUrl}/api/compras/`,
-                        payload,
-                        { headers }
-                    )
-                );
-                this.submitSuccess = 'Compra procesada exitosamente.';
-                this.form.reset();
-                this.visitantes.clear();
-            } catch (error) {
-                this.handleSubmitError(error);
-            } finally {
-                this.isSubmitting = false;
-            }
+        try {
+            const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+            await firstValueFrom(
+                this.httpClient.post(`${this.apiBaseUrl}/api/compras/`, payload, { headers })
+            );
+
+            this.modalData = {
+                cantidad: this.visitantes.length,
+                fecha: this.form.get('fechaVisita')?.value,
+                total: this.visitantes.controls.reduce((acc, ctrl) => {
+                    const tipoPaseNombre = this.getTipoPaseNombre(Number(ctrl.get('tipoPase')?.value));
+                    return acc + this.getPrecioUnitario(tipoPaseNombre);
+                }, 0)
+            };
+
+            this.showModal = true;
+            this.form.reset();
+            this.visitantes.clear();
+
+        } catch (error) {
+            this.handleSubmitError(error);
+        } finally {
+            this.isSubmitting = false;
+        }
     }
+
+        cerrarModal() {
+            this.showModal = false;
+        }
 
         private buildCompraPayload() {
             const fecha = this.form.get('fechaVisita')?.value as string;
@@ -185,14 +199,14 @@ export class ComprarEntrada {
             return { fechaInvalida: true }; // Retorna un error de validación si la fecha es anterior a hoy
           }
 
-      // Validar que no sea domingo (0 = Monday, ...)
-      if (fechaSeleccionada.getDay() === 6) return { parqueCerrado: true };
+      // Validar que no sea domingo (1 = Monday, ...)
+      if (fechaSeleccionada.getDay() === 1) return { parqueCerrado: true };
           
       // Validar que no sea feriado
       const month = fechaSeleccionada.getMonth() + 1; // getMonth() 0-11
       const day = fechaSeleccionada.getDate(); // empieza en 0
 
-      if ((month === 12 && day === 25) || (month === 1 && day === 1) || (month === 5 && day === 25) || (month === 7 && day === 9)) {
+      if ((month === 12 && day === 25) || (month === 1 && day === 1)) {
           return { parqueCerrado: true };
       }
       
@@ -221,7 +235,7 @@ export class ComprarEntrada {
         while (this.visitantes.length < finalCantidad) {
             this.visitantes.push(
             this.fb.group({
-                edad: ['', [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0), Validators.max(100)]],
+                edad: ['', [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0), Validators.max(99)]],
                 tipoPase: ['', Validators.required]
             })
             );

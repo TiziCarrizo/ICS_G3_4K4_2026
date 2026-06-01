@@ -1,19 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-
 // Variables
-$primary-green: #10b981;
-$secondary-blue: #0ea5e9;
-$accent-gold: #f59e0b;
-$error-red: #ef4444;
+$primary-green: #386641;
+$secondary-blue: #6a994e;
+$accent-gold: #a7c957;
+$error-red: #bc4749;
 $dark-text: #1f2937;
-$light-bg: #f9fafb;
-$border-gray: #e5e7eb;
+$light-bg: #f2e8cf;
+$border-gray: #e7e0c7;
 $white: #ffffff;
 $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 $shadow-md: 0 4px 6px 0 rgba(0, 0, 0, 0.1);
 $shadow-lg: 0 10px 15px 0 rgba(0, 0, 0, 0.1);
 $transition: all 0.3s ease;
-$brand-color: $secondary-blue;
+$brand-color: $primary-green;
 
 // Styles
 form.form-card {
@@ -26,7 +24,6 @@ form.form-card {
   margin: 40px auto;
   animation: slideInUp 0.6s ease-out;
   border: 1px solid $border-gray;
-  font-family: 'Poppins', 'Inter', 'Roboto', sans-serif;
 
   @media (max-width: 768px) {
     padding: 24px;
@@ -40,11 +37,12 @@ form.form-card {
   }
 
   h1 {
-    font-size: 1.875rem;
+    font-size: 2rem;
     font-weight: 800;
     color: $brand-color;
     margin-bottom: 32px;
     text-align: center;
+    line-height: 1.1;
     animation: slideInDown 0.6s ease-out;
 
     @media (max-width: 768px) {
@@ -95,18 +93,18 @@ form.form-card {
     &.ng-invalid.ng-dirty {
       border-color: $error-red;
       box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
-      background-color: #fff6f6;
+      background-color: #f9eee8;
     }
 
     &:focus {
       outline: none;
       border-color: $brand-color;
       background-color: $white;
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+      box-shadow: 0 0 0 3px rgba(56, 102, 65, 0.15);
     }
 
     &:hover:not(:focus) {
-      border-color: #d1d5db;
+      border-color: #d6cfb8;
     }
 
     @media (max-width: 768px) {
@@ -152,7 +150,7 @@ form.form-card {
   .visitante-card {
     border: 1px solid $border-gray;
     border-radius: 10px;
-    background: #f8fafc;
+    background: #f7f3e4;
     padding: 16px;
     margin: 12px 0;
   }
@@ -185,7 +183,7 @@ form.form-card {
     width: 100%;
     padding: 14px 24px;
     font-size: 1.05rem;
-    font-weight: 700;
+    font-weight: 800;
     border: none;
     border-radius: 8px;
     background: $brand-color;
@@ -212,8 +210,8 @@ form.form-card {
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 15px 30px 0 rgba(14, 165, 233, 0.35);
-      background: #0284c7;
+      box-shadow: 0 15px 30px 0 rgba(56, 102, 65, 0.35);
+      background: #2f5a38;
 
       &::before {
         left: 100%;
@@ -222,7 +220,7 @@ form.form-card {
 
     &:active {
       transform: translateY(0);
-      box-shadow: 0 5px 10px 0 rgba(16, 185, 129, 0.2);
+      box-shadow: 0 5px 10px 0 rgba(56, 102, 65, 0.2);
     }
 
     &:disabled {
@@ -264,5 +262,60 @@ form.form-card {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 41, 55, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  background: $white;
+  border-radius: 14px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  border: 1px solid $border-gray;
+  box-shadow: $shadow-lg;
+
+  .modal-title {
+    color: $brand-color;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  .modal-mail {
+    font-style: italic;
+    margin-top: 1rem;
+    color: $dark-text;
+  }
+
+  .modal-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+
+    button {
+      background: $brand-color;
+      color: $white;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: $transition;
+
+      &:hover {
+        background: #2f5a38;
+      }
+    }
   }
 }

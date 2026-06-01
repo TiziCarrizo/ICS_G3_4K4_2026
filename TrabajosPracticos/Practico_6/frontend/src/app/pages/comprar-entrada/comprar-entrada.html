@@ -51,8 +51,8 @@
             <div class="visitante-item">
                 <div class="edad-item" [ngClass]="{'invalid': edadInvalid(i)}">
                     <label class="field-label">Edad</label>
-                    <input formControlName="edad" type="number" placeholder="Ej: 25" intRange [rangeMin]="0"
-                        inputmode="numeric" autocomplete="off" enterkeyhint="done" />
+                    <input formControlName="edad" type="number" placeholder="Ej: 25" intRange [rangeMin]="0" [rangeMax]="99"
+                        min="0" max="99" step="1" inputmode="numeric" autocomplete="off" enterkeyhint="done" />
                 </div>
 
                 <!-- Tipo de pase -->
@@ -77,10 +77,10 @@
                 Usá solo números enteros.
                 }
                 @else if(edadHasError(i,'min')) {
-                La edad mínima es 1.
+                La edad mínima es 0.
                 }
                 @else if(edadHasError(i,'max')) {
-                La edad máxima es 100.
+                La edad máxima es 99.
                 }
             </small>
             }
@@ -117,4 +117,19 @@
     </button>   
 </form>
 
-
+@if (showModal) {
+<div class="modal-backdrop">
+    <div class="modal">
+        <h2 class="modal-title">✅ Compra confirmada</h2>
+        <p><strong>Cantidad de entradas:</strong> {{ modalData.cantidad }}</p>
+        <p><strong>Fecha de visita:</strong> {{ modalData.fecha }}</p>
+        <p><strong>Monto total:</strong> ARS{{ modalData.total }}</p>
+        <p class="modal-mail">
+            Se ha enviado un mail de confirmación a <strong>{{ mockUser.email }}</strong>.
+        </p>
+        <div class="modal-actions">
+            <button (click)="cerrarModal()">Seguir comprando</button>
+        </div>
+    </div>
+</div>
+}
