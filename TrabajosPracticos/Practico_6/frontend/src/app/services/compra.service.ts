@@ -20,6 +20,7 @@ export interface CompraRequest {
   fecha: string;
   forma_pago: 'TARJETA' | 'EFECTIVO';
   entradas: EntradaItem[];
+  email_confirmacion: string;
 }
 
 export interface CompraResponse {
@@ -28,6 +29,23 @@ export interface CompraResponse {
   fecha: string;
   monto_total: number;
   mercado_pago_redirect_url: string | null;
+}
+
+export interface EntradaDetalle {
+  edad: number;
+  tipo: string;
+  precio_unitario: number;
+}
+
+export interface CompraHistorial {
+  id: number;
+  fecha: string;
+  fecha_compra: string;
+  cantidad_entradas: number;
+  monto_total: number;
+  forma_pago: string;
+  mercado_pago_redirect_url: string | null;
+  entradas: EntradaDetalle[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -43,5 +61,9 @@ export class CompraService {
 
   realizarCompra(datos: CompraRequest): Observable<CompraResponse> {
     return this.http.post<CompraResponse>(`${this.apiUrl}/comprar/`, datos);
+  }
+
+  getMisCompras(usuarioId: number): Observable<CompraHistorial[]> {
+    return this.http.get<CompraHistorial[]>(`${this.apiUrl}/mis-compras/?usuario_id=${usuarioId}`);
   }
 }

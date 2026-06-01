@@ -1,0 +1,68 @@
+<div class="mis-compras-container">
+  <div class="page-header">
+    <h2>Mis Compras</h2>
+    @if (usuarioActivo) {
+      <span class="usuario-badge">{{ usuarioActivo.nombre }} {{ usuarioActivo.apellido }}</span>
+    }
+  </div>
+
+  @if (cargando()) {
+    <div class="estado-msg">Cargando...</div>
+  } @else if (error()) {
+    <div class="error-banner">
+      {{ error() }}
+      <a routerLink="/comprar-entrada" class="link-accion">Ir a Comprar Entradas</a>
+    </div>
+  } @else if (compras().length === 0) {
+    <div class="estado-msg">
+      <p>No tenés compras registradas aún.</p>
+      <a routerLink="/comprar-entrada" class="btn-primario">Comprar entradas</a>
+    </div>
+  } @else {
+    <p class="total-compras">{{ compras().length }} compra{{ compras().length !== 1 ? 's' : '' }} registrada{{ compras().length !== 1 ? 's' : '' }}</p>
+
+    @for (compra of compras(); track compra.id) {
+      <div class="compra-card">
+        <div class="compra-header">
+          <div class="compra-id">Compra #{{ compra.id }}</div>
+          <div class="compra-fecha-visita">Visita: {{ formatFecha(compra.fecha) }}</div>
+          <div class="compra-total">${{ compra.monto_total | number }}</div>
+        </div>
+
+        <div class="compra-detalle">
+          <div class="meta-item">
+            <span class="meta-label">Fecha de compra</span>
+            <span>{{ compra.fecha_compra | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Forma de pago</span>
+            <span>{{ compra.forma_pago === 'TARJETA' ? 'Tarjeta (Mercado Pago)' : 'Efectivo' }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Entradas</span>
+            <span>{{ compra.cantidad_entradas }}</span>
+          </div>
+        </div>
+
+        <div class="entradas-list">
+          @for (e of compra.entradas; track $index) {
+            <div class="entrada-chip">
+              <span class="chip-tipo" [class.vip]="e.tipo === 'VIP'">{{ e.tipo }}</span>
+              <span>{{ e.edad }} años</span>
+              <span class="chip-precio">${{ e.precio_unitario | number }}</span>
+            </div>
+          }
+        </div>
+
+        @if (compra.mercado_pago_redirect_url) {
+          <div class="mp-banner">
+            <span>⚠ Pago pendiente con Mercado Pago</span>
+            <a [href]="compra.mercado_pago_redirect_url" target="_blank" class="btn-mp">
+              Ir a Mercado Pago →
+            </a>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,192 @@
+$primary-green: #386641;
+$secondary-green: #6a994e;
+$accent-lime: #a7c957;
+$cream: #f2e8cf;
+$red-accent: #bc4749;
+$dark-text: #1f2937;
+$border-color: #e5e7eb;
+$white: #ffffff;
+
+.mis-compras-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+  }
+}
+
+.usuario-badge {
+  background: $accent-lime;
+  color: $primary-green;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.total-compras {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.estado-msg {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+
+  p { margin-bottom: 20px; font-size: 1rem; }
+}
+
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: $red-accent;
+  padding: 14px 18px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.link-accion, .btn-primario {
+  display: inline-block;
+  background: $primary-green;
+  color: $white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+
+  &:hover { opacity: 0.9; }
+}
+
+.compra-card {
+  background: $white;
+  border: 1px solid $border-color;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.compra-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+
+  .compra-id {
+    font-weight: 700;
+    color: $primary-green;
+    font-size: 1rem;
+  }
+
+  .compra-fecha-visita {
+    flex: 1;
+    color: $dark-text;
+    font-size: 0.9rem;
+  }
+
+  .compra-total {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: $primary-green;
+  }
+}
+
+.compra-detalle {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid $border-color;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.85rem;
+  color: $dark-text;
+
+  .meta-label {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.entradas-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.entrada-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f9fafb;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+
+  .chip-tipo {
+    font-weight: 700;
+    color: $secondary-green;
+    &.vip { color: $primary-green; }
+  }
+
+  .chip-precio {
+    font-weight: 600;
+    color: $dark-text;
+  }
+}
+
+.mp-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 10px 16px;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: #92400e;
+
+  .btn-mp {
+    background: #009ee3;
+    color: $white;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.82rem;
+    white-space: nowrap;
+
+    &:hover { opacity: 0.9; }
+  }
+}

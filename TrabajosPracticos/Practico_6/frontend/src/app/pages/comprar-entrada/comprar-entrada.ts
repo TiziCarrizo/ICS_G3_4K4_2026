@@ -13,17 +13,32 @@ export class ComprarEntrada implements OnInit {
   usuarios = signal<UsuarioApi[]>([]);
   usuarioId = signal<number | null>(null);
   usuarioSeleccionado = signal<UsuarioApi | null>(null);
+  emailConfirmacion = signal('');
 
   fecha = signal('');
   formaPago = signal<'TARJETA' | 'EFECTIVO' | ''>('');
-  entradas = signal<EntradaItem[]>([{ edad: 0, tipo_pase: 'REGULAR', precio_unitario: 2500 }]);
+  entradas = signal<EntradaItem[]>([{ edad: 0, tipo_pase: 'REGULAR', precio_unitario: 0 }]);
 
   cargando = signal(false);
   error = signal('');
   resultado = signal<CompraResponse | null>(null);
 
-  readonly PRECIO_VIP = 5000;
-  readonly PRECIO_REGULAR = 2500;
+  readonly PRECIO_VIP = 20000;
+  readonly PRECIO_REGULAR = 10000;
+
+  calcularPrecio(edad: number, tipo_pase: 'VIP' | 'REGULAR'): number {
+    const base = tipo_pase === 'VIP' ? this.PRECIO_VIP : this.PRECIO_REGULAR;
+    if (edad <= 3) return 0;
+    if (edad <= 15 || edad >= 60) return base * 0.5;
+    return base;
+  }
+
+  descuentoLabel(edad: number): string {
+    if (edad <= 3) return '(gratis)';
+    if (edad <= 15) return '(50% off - menor de 16)';
+    if (edad >= 60) return '(50% off - mayor de 59)';
+    return '';
+  }
 
   montoTotal = computed(() => this.entradas().reduce((sum, e) => sum + e.precio_unitario, 0));
 
@@ -37,6 +52,7 @@ export class ComprarEntrada implements OnInit {
           this.usuarioSeleccionado.set(usuarios[0]);
           this.usuarioId.set(usuarios[0].id);
           this.compraService.usuarioActivo.set(usuarios[0]);
+          this.emailConfirmacion.set(usuarios[0].email);
         }
       },
       error: () => this.error.set('No se pudieron cargar los usuarios.')
@@ -47,6 +63,7 @@ export class ComprarEntrada implements OnInit {
     const found = this.usuarios().find(u => u.id === +id) ?? null;
     this.usuarioSeleccionado.set(found);
     this.compraService.usuarioActivo.set(found);
+    if (found) this.emailConfirmacion.set(found.email);
   }
 
   agregarEntrada() {
@@ -64,13 +81,17 @@ export class ComprarEntrada implements OnInit {
   onTipoPaseChange(index: number, tipo: 'VIP' | 'REGULAR') {
     this.entradas.update(e => e.map((item, i) =>
       i === index
-        ? { ...item, tipo_pase: tipo, precio_unitario: tipo === 'VIP' ? this.PRECIO_VIP : this.PRECIO_REGULAR }
+        ? { ...item, tipo_pase: tipo, precio_unitario: this.calcularPrecio(item.edad, tipo) }
         : item
     ));
   }
 
   updateEdad(index: number, edad: number) {
-    this.entradas.update(e => e.map((item, i) => i === index ? { ...item, edad: +edad } : item));
+    this.entradas.update(e => e.map((item, i) =>
+      i === index
+        ? { ...item, edad: +edad, precio_unitario: this.calcularPrecio(+edad, item.tipo_pase) }
+        : item
+    ));
   }
 
   confirmarCompra() {
@@ -85,6 +106,10 @@ export class ComprarEntrada implements OnInit {
       this.error.set('Completá todos los campos antes de continuar.');
       return;
     }
+    if (!this.emailConfirmacion() || !this.emailConfirmacion().includes('@')) {
+      this.error.set('Ingresá un email válido para recibir la confirmación.');
+      return;
+    }
     if (this.entradas().some(e => !e.edad || e.edad <= 0)) {
       this.error.set('Ingresá la edad de todos los visitantes.');
       return;
@@ -97,6 +122,7 @@ export class ComprarEntrada implements OnInit {
       fecha: this.fecha(),
       forma_pago: this.formaPago() as 'TARJETA' | 'EFECTIVO',
       entradas: this.entradas(),
+      email_confirmacion: this.emailConfirmacion(),
     }).subscribe({
       next: (res) => {
         this.cargando.set(false);
