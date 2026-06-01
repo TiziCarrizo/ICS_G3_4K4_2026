@@ -70,7 +70,8 @@
       <!-- Fecha -->
       <div class="form-group">
         <label for="fecha">Fecha de visita</label>
-        <input id="fecha" type="date" [ngModel]="fecha()" (ngModelChange)="fecha.set($event)" name="fecha" />
+        <input id="fecha" type="date" [ngModel]="fecha()" (ngModelChange)="fecha.set($event)" name="fecha" [min]="minDate" />
+        <span class="campo-hint">El parque no abre los lunes ni feriados (25/12 y 1/1)</span>
       </div>
 
       <!-- Forma de pago -->

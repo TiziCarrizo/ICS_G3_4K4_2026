@@ -15,7 +15,18 @@ export class ComprarEntrada implements OnInit {
   usuarioSeleccionado = signal<UsuarioApi | null>(null);
   emailConfirmacion = signal('');
 
-  fecha = signal('');
+  fecha = signal(ComprarEntrada.proximaFechaValida());
+
+  private static proximaFechaValida(): string {
+    const FERIADOS = [[12, 25], [1, 1]];
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    while (
+      d.getDay() === 1 ||
+      FERIADOS.some(([m, day]) => d.getMonth() + 1 === m && d.getDate() === day)
+    ) { d.setDate(d.getDate() + 1); }
+    return d.toISOString().split('T')[0];
+  }
   formaPago = signal<'TARJETA' | 'EFECTIVO' | ''>('');
   entradas = signal<EntradaItem[]>([{ edad: 0, tipo_pase: 'REGULAR', precio_unitario: 0 }]);
 
@@ -41,6 +52,8 @@ export class ComprarEntrada implements OnInit {
   }
 
   montoTotal = computed(() => this.entradas().reduce((sum, e) => sum + e.precio_unitario, 0));
+
+  readonly minDate = new Date().toISOString().split('T')[0];
 
   constructor(private compraService: CompraService) {}
 
