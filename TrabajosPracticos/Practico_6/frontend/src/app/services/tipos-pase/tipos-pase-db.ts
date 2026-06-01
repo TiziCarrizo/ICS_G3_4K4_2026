@@ -11,7 +11,7 @@ export interface TipoEntrada {
     providedIn: 'root'
 })
 export class TiposPaseDb {
-    private baseUrl = 'http://localhost:8000/tipos_entrada';
+    private baseUrl = 'http://127.0.0.1:8000/tipos_entrada';
 
     constructor(private httpClient: HttpClient) { }
 

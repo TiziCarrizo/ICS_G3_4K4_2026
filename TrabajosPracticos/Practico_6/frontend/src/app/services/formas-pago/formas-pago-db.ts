@@ -11,7 +11,7 @@ export interface FormaPago {
     providedIn: 'root'
 })
 export class FormasPagoDb {
-    private baseUrl = 'http://localhost:8000/formas_pago';
+    private baseUrl = 'http://127.0.0.1:8000/formas_pago';
 
     constructor(private httpClient: HttpClient) { }
 

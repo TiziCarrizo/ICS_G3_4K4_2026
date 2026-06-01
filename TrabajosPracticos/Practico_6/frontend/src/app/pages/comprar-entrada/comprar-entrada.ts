@@ -5,6 +5,9 @@ import { TipoEntrada, TiposPaseDb } from '../../services/tipos-pase/tipos-pase-d
 import { Router } from '@angular/router';
 import { IntRangeDirective } from '../../directives/int-range.directive';
 import { FormaPago, FormasPagoDb } from '../../services/formas-pago/formas-pago-db';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { MOCK_USER } from '../../app';
 
 
 
@@ -18,37 +21,40 @@ import { FormaPago, FormasPagoDb } from '../../services/formas-pago/formas-pago-
 export class ComprarEntrada {
 
   form: FormGroup;
-  tiposPase: TipoEntrada[] = [];
-  formasPago: FormaPago[] = [];
-  // Aquí puedes definir las propiedades y métodos necesarios para tu componente
+    hoyISO: string = new Date().toISOString().split('T')[0];
+    tiposPase: TipoEntrada[] = [
+        { id: 1, nombre: 'VIP' },
+        { id: 2, nombre: 'Regular' }
+    ];
+    formasPago: FormaPago[] = [
+        { id: 1, nombre: 'EFECTIVO' },
+        { id: 2, nombre: 'TARJETA' }
+    ];
+    isSubmitting = false;
+    submitError = '';
+    submitSuccess = '';
+    private apiBaseUrl = 'http://127.0.0.1:8000';
+  // Aquí puedes definir las propiedades y método necesarios para tu componente
   constructor(
         private fb: FormBuilder,
         private tiposPaseDb: TiposPaseDb,
         private formasPagoDb: FormasPagoDb,
+        private httpClient: HttpClient,
         private router: Router
     ) {
         this.form = this.buildForm();
     }
 
-    async ngOnInit() {
-        await this.loadTiposPase();
-        await this.loadFormasPago();
-    }
+        ngOnInit() {
+            return;
+        }
 
     private async loadTiposPase() {
-        try {
-            this.tiposPase = await this.tiposPaseDb.getAll();
-        } catch (error) {
-            console.error('Error cargando tipos de pase:', error);
-        }
+      return;
     }
     
      private async loadFormasPago() {
-        try {
-            this.formasPago = await this.formasPagoDb.getAll();
-        } catch (error) {
-            console.error('Error cargando formas de pago:', error);
-        }
+      return;
     }
 
     buildForm(): FormGroup {
@@ -68,9 +74,106 @@ export class ComprarEntrada {
       }
 
     // Método para manejar el envío del formulario
-    submitForm() {
-      console.log(this.form.value);
+        async submitForm() {
+            if (this.form.invalid) {
+                this.form.markAllAsTouched();
+                return;
+            }
+
+            this.isSubmitting = true;
+            this.submitError = '';
+            this.submitSuccess = '';
+
+            const payload = this.buildCompraPayload();
+
+            try {
+                const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+                await firstValueFrom(
+                    this.httpClient.post(
+                        `${this.apiBaseUrl}/api/compras/`,
+                        payload,
+                        { headers }
+                    )
+                );
+                this.submitSuccess = 'Compra procesada exitosamente.';
+                this.form.reset();
+                this.visitantes.clear();
+            } catch (error) {
+                this.handleSubmitError(error);
+            } finally {
+                this.isSubmitting = false;
+            }
     }
+
+        private buildCompraPayload() {
+            const fecha = this.form.get('fechaVisita')?.value as string;
+            const formaPagoId = this.form.get('formaPago')?.value as number;
+            const formaPagoNombre = this.getFormaPagoNombre(formaPagoId);
+            const entradas = this.visitantes.controls.map((ctrl) => {
+                const edad = Number(ctrl.get('edad')?.value);
+                const tipoPaseId = Number(ctrl.get('tipoPase')?.value);
+                const tipoPaseNombre = this.getTipoPaseNombre(tipoPaseId);
+
+                return {
+                    edad,
+                    tipo_pase: tipoPaseNombre,
+                    precio_unitario: this.getPrecioUnitario(tipoPaseNombre)
+                };
+            });
+
+            return {
+                usuario: {
+                    id: MOCK_USER.id,
+                    nombre: `${MOCK_USER.nombre} ${MOCK_USER.apellido}`
+                },
+                fecha,
+                forma_pago: formaPagoNombre,
+                entradas
+            };
+        }
+
+        private getTipoPaseNombre(id: number): string {
+            return this.tiposPase.find((tp) => tp.id === id)?.nombre ?? '';
+        }
+
+        private getFormaPagoNombre(id: number): string {
+            return this.formasPago.find((fp) => fp.id === id)?.nombre ?? '';
+        }
+
+        private getPrecioUnitario(tipoPaseNombre: string): number {
+            const priceMap: Record<string, number> = {
+                VIP: 5000,
+                Regular: 3000
+            };
+
+            return priceMap[tipoPaseNombre] ?? 0;
+        }
+
+        private async handleSubmitError(error: unknown) {
+            if (!(error instanceof HttpErrorResponse)) {
+                this.submitError = 'Lo sentimos, intente mas tarde.';
+                return;
+            }
+
+            if (error.status === 400) {
+                this.submitError = error.error?.error ?? 'Error de validacion en la compra.';
+                return;
+            }
+
+            if (error.status === 404) {
+                this.submitError = error.error?.error ?? 'Dato parametrico no encontrado en la base de datos.';
+                await this.loadTiposPase();
+                await this.loadFormasPago();
+                return;
+            }
+
+            if (error.status === 500) {
+                this.submitError = 'Lo sentimos, intente mas tarde.';
+                return;
+            }
+
+            this.submitError = 'No se pudo procesar la compra.';
+        }
 
     fechaValida(control: AbstractControl) { // abstractControl permite validar el control específico al que se le asigna esta función de validación
       const fechaSeleccionada = new Date(control.value + 'T00:00:00'); // Convertir a Date, asumiendo que el valor es una fecha sin hora
@@ -111,24 +214,24 @@ export class ComprarEntrada {
     }
 
     actualizarVisitantes() {
-      // verificar que el control de cantidad de entradas exista y tenga un valor válido
-      const cantidad = this.form.get('cantidadEntradas')?.value || 0;
-      const maximaCantidad = 10;
-      const finalCantidad = Math.min(cantidad, maximaCantidad);
+        const cantidad = this.form.get('cantidadEntradas')?.value || 0;
+        const finalCantidad = Math.min(cantidad, 10);
 
-      if (this.visitantes.length < finalCantidad) {
-        this.visitantes.push(
-                  this.fb.group({
-                      edad: ['', [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0), Validators.max(100)]],
-                      tipoPase: ['', Validators.required]
-                  })
-              );
+        // Agregar los que faltan
+        while (this.visitantes.length < finalCantidad) {
+            this.visitantes.push(
+            this.fb.group({
+                edad: ['', [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0), Validators.max(100)]],
+                tipoPase: ['', Validators.required]
+            })
+            );
+        }
 
-              while (this.visitantes.length > finalCantidad) {
-              this.visitantes.removeAt(this.visitantes.length - 1);
-          }
+        // Eliminar los que sobran
+        while (this.visitantes.length > finalCantidad) {
+            this.visitantes.removeAt(this.visitantes.length - 1);
+        }
     }
-  }
     visitantesCoinciden(control: AbstractControl) {
           const cantidadEntradas = this.form?.get('cantidadEntradas')?.value || 0;
           const visitantes = (control as FormArray).controls || [];

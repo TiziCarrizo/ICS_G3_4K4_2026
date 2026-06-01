@@ -1,8 +1,15 @@
 <form [formGroup]="form" (ngSubmit)="submitForm()" class="form-card" novalidate>
-    <h1>Comprar entrada</h1>
+    <h1>🎟️Comprar entrada🎟️</h1>
+    @if(submitSuccess) {
+        <div class="alert success" role="status">{{ submitSuccess }}</div>
+    }
+    @if(submitError) {
+        <div class="alert error" role="alert">{{ submitError }}</div>
+    }
     <label> Fecha de visita</label>
     <input type="date"
-    formControlName="fechaVisita">
+    formControlName="fechaVisita"
+    [min]="hoyISO">
     <small class="error" aria-live="polite">
         @if(hasError('fechaVisita', 'required')) {
             <span>La fecha de visita es obligatoria.</span>
@@ -39,23 +46,26 @@
         <label>Datos de los visitantes</label>
 
         @for (visitanteCtrl of visitantes.controls; track $index; let i = $index) {
-        <div [formGroupName]="i" class="visitante-item">
-            <div class="edad-item" [ngClass]="{'invalid': edadInvalid(i)}">
-                <input formControlName="edad" type="number" placeholder="Edad {{ i + 1 }}" intRange [rangeMin]="0"
-                    inputmode="numeric" autocomplete="off" enterkeyhint="done" />
+        <div [formGroupName]="i" class="visitante-card">
+            <div class="visitante-title">Visitante {{ i + 1 }}</div>
+            <div class="visitante-item">
+                <div class="edad-item" [ngClass]="{'invalid': edadInvalid(i)}">
+                    <label class="field-label">Edad</label>
+                    <input formControlName="edad" type="number" placeholder="Ej: 25" intRange [rangeMin]="0"
+                        inputmode="numeric" autocomplete="off" enterkeyhint="done" />
+                </div>
+
+                <!-- Tipo de pase -->
+                <div class="pase-item" [ngClass]="{'invalid': paseInvalid(i)}">
+                    <label class="field-label">Tipo de pase</label>
+                    <select formControlName="tipoPase">
+                        <option value="">Selecciona un pase</option>
+                        @for (tp of tiposPase; track tp.id) {
+                        <option [value]="tp.id">{{ tp.nombre }}</option>
+                        }
+                    </select>
+                </div>
             </div>
-
-            <!-- Tipo de pase -->
-            <div class="pase-item" [ngClass]="{'invalid': paseInvalid(i)}">
-                <select formControlName="tipoPase">
-                    <option value="">Tipo de pase</option>
-                    @for (tp of tiposPase; track tp.id) {
-                    <option [value]="tp.id">{{ tp.nombre }}</option>
-                    }
-                </select>
-            </div>
-
-
         </div>
         <div class="error-visitante">
             @if(edadInvalid(i)) {
@@ -102,7 +112,9 @@
     </div>
 
 
-    <button type="submit" class ="submit-btn" [disabled]="form.invalid">
+    <button type="submit" class ="submit-btn" [disabled]="form.invalid || isSubmitting">
         Comprar
     </button>   
 </form>
+
+
