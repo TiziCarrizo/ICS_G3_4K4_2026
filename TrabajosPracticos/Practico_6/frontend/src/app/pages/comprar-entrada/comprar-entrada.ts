@@ -100,7 +100,8 @@ export class ComprarEntrada {
                 fecha: this.form.get('fechaVisita')?.value,
                 total: this.visitantes.controls.reduce((acc, ctrl) => {
                     const tipoPaseNombre = this.getTipoPaseNombre(Number(ctrl.get('tipoPase')?.value));
-                    return acc + this.getPrecioUnitario(tipoPaseNombre);
+                    const edad = Number(ctrl.get('edad')?.value);
+                    return acc + this.getPrecioUnitario(tipoPaseNombre, edad);
                 }, 0)
             };
 
@@ -131,7 +132,7 @@ export class ComprarEntrada {
                 return {
                     edad,
                     tipo_pase: tipoPaseNombre,
-                    precio_unitario: this.getPrecioUnitario(tipoPaseNombre)
+                    precio_unitario: this.getPrecioUnitario(tipoPaseNombre, edad)
                 };
             });
 
@@ -157,13 +158,22 @@ export class ComprarEntrada {
             return this.formasPago.find((fp) => fp.id === Number(id))?.nombre ?? '';
         }
 
-        private getPrecioUnitario(tipoPaseNombre: string): number {
+        private getPrecioUnitario(tipoPaseNombre: string, edad: number): number {
             const priceMap: Record<string, number> = {
-                VIP: 5000.0,
-                Regular: 3000.0
+                VIP: 20000.0,
+                Regular: 10000.0
             };
+            
+            const base = priceMap[tipoPaseNombre] ?? 0.0;
 
-            return priceMap[tipoPaseNombre] ?? 0;
+            // Aplicar descuentos
+            // Menores o igual a 3 años
+            if (edad <= 3) return 0.0;
+            // Menores o iguales a 15 años
+            if (edad <= 15) return base * 0.5;
+            // Mayores o iguales a 65 años
+            if (edad >= 65) return base * 0.5;
+            return base;
         }
 
         private async handleSubmitError(error: unknown) {
