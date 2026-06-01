@@ -1,6 +1,8 @@
 from django.urls import path
-from . import views
+from .views import ComprarEntradaView, UsuariosView, MisComprasView
 
 urlpatterns = [
-    path('api/compras/', views.api_realizar_compra, name='api_compras'),
+    path('comprar/', ComprarEntradaView.as_view(), name='comprar-entrada'),
+    path('usuarios/', UsuariosView.as_view(), name='usuarios'),
+    path('mis-compras/', MisComprasView.as_view(), name='mis-compras'),
 ]

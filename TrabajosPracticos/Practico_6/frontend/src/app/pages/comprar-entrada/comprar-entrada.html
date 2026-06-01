@@ -1,135 +1,144 @@
-<form [formGroup]="form" (ngSubmit)="submitForm()" class="form-card" novalidate>
-    <h1>🎟️Comprar entrada🎟️</h1>
-    @if(submitSuccess) {
-        <div class="alert success" role="status">{{ submitSuccess }}</div>
-    }
-    @if(submitError) {
-        <div class="alert error" role="alert">{{ submitError }}</div>
-    }
-    <label> Fecha de visita</label>
-    <input type="date"
-    formControlName="fechaVisita"
-    [min]="hoyISO">
-    <small class="error" aria-live="polite">
-        @if(hasError('fechaVisita', 'required')) {
-            <span>La fecha de visita es obligatoria.</span>
-        } @else if (hasError('fechaVisita', 'fechaPasada')){
-            <span>La fecha de visita no puede ser en el pasado.</span>
-        } @else if (hasError('fechaVisita', 'parqueCerrado')) {
-            <span>El parque esta cerrado ese día.</span>
-        }
-    </small>
+<div class="comprar-container">
 
-    <!-- Cantidad de entradas -->
-    <div class="form-group" [ngClass]="{'invalid': isInvalid('cantidadEntradas')}">
-        <label>Cantidad de entradas</label>
-        <input type="number" formControlName="cantidadEntradas" intRange [rangeMin]="1" inputmode="numeric"
-            autocomplete="off" enterkeyhint="done" (change)="actualizarVisitantes()" />
-        @if(isInvalid('cantidadEntradas')){
-        <small class="error" aria-live="polite">
-            @if(hasError('cantidadEntradas','required')) {
-            La cantidad es obligatoria.
-            }
-            @else if (hasError('cantidadEntradas','pattern')) {
-            Debe ser un número entero.
-            }
-            @else if (hasError('cantidadEntradas','min') || hasError('cantidadEntradas','max')) {
-            Debe estar entre 1 y 10.
-            }
-        </small>
-        }
+  <!-- RESULTADO EXITOSO -->
+  @if (resultado()) {
+    <div class="resultado-card">
+      <div class="resultado-icon">✓</div>
+      <h2>¡Compra confirmada!</h2>
+      <p>Se enviará un mail de confirmación a <strong>{{ emailConfirmacion() }}</strong></p>
+      <div class="resultado-detalle">
+        <div class="detalle-item">
+          <span class="label">Entradas</span>
+          <span class="valor">{{ resultado()!.cantidad_entradas }}</span>
+        </div>
+        <div class="detalle-item">
+          <span class="label">Fecha de visita</span>
+          <span class="valor">{{ resultado()!.fecha }}</span>
+        </div>
+        <div class="detalle-item">
+          <span class="label">Total</span>
+          <span class="valor">${{ resultado()!.monto_total | number }}</span>
+        </div>
+      </div>
+
+      @if (resultado()!.mercado_pago_redirect_url) {
+        <div class="mercadopago-box">
+          <p>Tu pago es con tarjeta. Completá el pago en Mercado Pago:</p>
+          <a [href]="resultado()!.mercado_pago_redirect_url" target="_blank" class="btn-mercadopago">
+            Ir a Mercado Pago →
+          </a>
+        </div>
+      }
+
+      <button class="btn-secundario" (click)="nuevaCompra()">Hacer otra compra</button>
     </div>
 
-    <!-- Visitantes: edad + tipo de pase -->
-    <div formArrayName="visitantes" class="form-group edades-group"
-        [ngClass]="{'invalid': form.get('visitantes')?.invalid && (form.get('visitantes')?.touched || form.get('visitantes')?.dirty)}">
-        <label>Datos de los visitantes</label>
+  } @else {
 
-        @for (visitanteCtrl of visitantes.controls; track $index; let i = $index) {
-        <div [formGroupName]="i" class="visitante-card">
-            <div class="visitante-title">Visitante {{ i + 1 }}</div>
-            <div class="visitante-item">
-                <div class="edad-item" [ngClass]="{'invalid': edadInvalid(i)}">
-                    <label class="field-label">Edad</label>
-                    <input formControlName="edad" type="number" placeholder="Ej: 25" intRange [rangeMin]="0" [rangeMax]="99"
-                        min="0" max="99" step="1" inputmode="numeric" autocomplete="off" enterkeyhint="done" />
-                </div>
+    <!-- FORMULARIO -->
+    <div class="form-card">
+      <h2>Comprar Entradas</h2>
 
-                <!-- Tipo de pase -->
-                <div class="pase-item" [ngClass]="{'invalid': paseInvalid(i)}">
-                    <label class="field-label">Tipo de pase</label>
-                    <select formControlName="tipoPase">
-                        <option value="">Selecciona un pase</option>
-                        @for (tp of tiposPase; track tp.id) {
-                        <option [value]="tp.id">{{ tp.nombre }}</option>
-                        }
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="error-visitante">
-            @if(edadInvalid(i)) {
-            <small class="error" aria-live="polite">
-                @if(edadHasError(i,'required')) {
-                La edad es obligatoria.
-                }
-                @else if(edadHasError(i,'pattern')) {
-                Usá solo números enteros.
-                }
-                @else if(edadHasError(i,'min')) {
-                La edad mínima es 0.
-                }
-                @else if(edadHasError(i,'max')) {
-                La edad máxima es 99.
-                }
-            </small>
-            }
-            @else if(paseInvalid(i)) {
-            <small class="error">Seleccioná un tipo de pase.</small>
-            }
-        </div>
-        }
+      @if (error()) {
+        <div class="error-banner">{{ error() }}</div>
+      }
 
-        @if(form.get('visitantes')?.errors?.['visitantesNoCoinciden']) {
-        <small class="error" aria-live="polite">
-            La cantidad de visitantes debe coincidir con la cantidad de entradas.
-        </small>
-        }
-    </div>
-
-    <!-- Forma de pago -->
-    <div class="form-group" [ngClass]="{'invalid': isInvalid('formaPago')}">
-        <label>Forma de pago</label>
-        <select formControlName="formaPago">
-            <option value="">Seleccione</option>
-            @for (fp of formasPago; track fp.id) {
-            <option [value]="fp.id">{{ fp.nombre }}</option>
-            }
+      <!-- Usuario -->
+      <div class="form-group">
+        <label for="usuario">Usuario</label>
+        <select id="usuario" name="usuario" [ngModel]="usuarioId()" (ngModelChange)="onUsuarioChange($event)">
+          @for (u of usuarios(); track u.id) {
+            <option [value]="u.id">{{ u.nombre }} {{ u.apellido }} — {{ u.email }}</option>
+          }
         </select>
-        @if(isInvalid('formaPago')) {
-        <small class="error">Seleccioná la forma de pago.</small>
-        }
-    </div>
+      </div>
 
+      <!-- Email de confirmación -->
+      <div class="form-group">
+        <label for="emailConfirmacion">Email de confirmación</label>
+        <input
+          id="emailConfirmacion"
+          type="email"
+          name="emailConfirmacion"
+          [ngModel]="emailConfirmacion()"
+          (ngModelChange)="emailConfirmacion.set($event)"
+          placeholder="tu@email.com"
+        />
+        <small class="campo-hint">Recibirás los datos de tu compra en este correo</small>
+      </div>
 
-    <button type="submit" class ="submit-btn" [disabled]="form.invalid || isSubmitting">
-        Comprar
-    </button>   
-</form>
+      <!-- Fecha -->
+      <div class="form-group">
+        <label for="fecha">Fecha de visita</label>
+        <input id="fecha" type="date" [ngModel]="fecha()" (ngModelChange)="fecha.set($event)" name="fecha" />
+      </div>
 
-@if (showModal) {
-<div class="modal-backdrop">
-    <div class="modal">
-        <h2 class="modal-title">✅ Compra confirmada</h2>
-        <p><strong>Cantidad de entradas:</strong> {{ modalData.cantidad }}</p>
-        <p><strong>Fecha de visita:</strong> {{ modalData.fecha }}</p>
-        <p><strong>Monto total:</strong> ARS{{ modalData.total }}</p>
-        <p class="modal-mail">
-            Se ha enviado un mail de confirmación a <strong>{{ mockUser.email }}</strong>.
-        </p>
-        <div class="modal-actions">
-            <button (click)="cerrarModal()">Seguir comprando</button>
+      <!-- Forma de pago -->
+      <div class="form-group">
+        <label>Forma de pago</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" [ngModel]="formaPago()" (ngModelChange)="formaPago.set($event)" name="formaPago" value="EFECTIVO" />
+            Efectivo en boletería
+          </label>
+          <label class="radio-label">
+            <input type="radio" [ngModel]="formaPago()" (ngModelChange)="formaPago.set($event)" name="formaPago" value="TARJETA" />
+            Tarjeta (Mercado Pago)
+          </label>
         </div>
+      </div>
+
+      <!-- Entradas -->
+      <div class="entradas-section">
+        <div class="entradas-header">
+          <label>Entradas (máx. 10)</label>
+          <button type="button" class="btn-agregar" (click)="agregarEntrada()" [disabled]="entradas().length >= 10">
+            + Agregar entrada
+          </button>
+        </div>
+        <div class="precios-hint">
+          Regular $10.000 · VIP $20.000 &nbsp;|&nbsp; ≤3 años gratis · ≤15 y ≥60 años 50% off
+        </div>
+
+        @for (entrada of entradas(); track $index) {
+          <div class="entrada-row">
+            <span class="entrada-num">{{ $index + 1 }}</span>
+            <div class="entrada-field">
+              <label>Edad</label>
+              <input type="number" [ngModel]="entrada.edad" (ngModelChange)="updateEdad($index, $event)" [name]="'edad_' + $index" min="1" placeholder="Edad" />
+            </div>
+            <div class="entrada-field">
+              <label>Tipo de pase</label>
+              <select [ngModel]="entrada.tipo_pase" [name]="'tipo_' + $index"
+                      (ngModelChange)="onTipoPaseChange($index, $event)">
+                <option value="REGULAR">Regular — $10.000</option>
+                <option value="VIP">VIP — $20.000</option>
+              </select>
+            </div>
+            <div class="entrada-precio">
+              ${{ entrada.precio_unitario | number }}
+              @if (descuentoLabel(entrada.edad)) {
+                <span class="descuento-label">{{ descuentoLabel(entrada.edad) }}</span>
+              }
+            </div>
+            @if (entradas().length > 1) {
+              <button type="button" class="btn-quitar" (click)="quitarEntrada($index)">✕</button>
+            }
+          </div>
+        }
+
+        <div class="total-row">
+          <span>Total</span>
+          <span class="total-valor">${{ montoTotal() | number }}</span>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn-confirmar" (click)="confirmarCompra()" [disabled]="cargando()">
+        @if (cargando()) { Procesando... } @else { Confirmar compra }
+      </button>
     </div>
+  }
+
 </div>
-}
+
