@@ -17,16 +17,17 @@ $brand-color: $primary-green;
 form.form-card {
   background: $white;
   border-radius: 12px;
-  padding: 40px;
+  padding: 32px;
   box-shadow: $shadow-lg;
-  max-width: 500px;
-  width: 100%;
-  margin: 40px auto;
+  max-width: 440px;
+  width: min(100%, 440px);
+  margin: 32px auto;
   animation: slideInUp 0.6s ease-out;
   border: 1px solid $border-gray;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
-    padding: 24px;
+    padding: 20px;
     margin: 20px auto;
     max-width: 100%;
   }
@@ -78,8 +79,8 @@ form.form-card {
   input[type='number'],
   select {
     width: 100%;
-    padding: 12px 16px;
-    font-size: 1rem;
+    padding: 10px 12px;
+    font-size: 0.95rem;
     border: 2px solid $border-gray;
     border-radius: 8px;
     background-color: $light-bg;
@@ -108,8 +109,8 @@ form.form-card {
     }
 
     @media (max-width: 768px) {
-      padding: 10px 12px;
-      font-size: 0.95rem;
+      padding: 9px 10px;
+      font-size: 0.9rem;
     }
   }
 
@@ -145,31 +146,40 @@ form.form-card {
     font-weight: 600;
     color: $dark-text;
     margin: 0 0 6px 0;
+    display: block;
   }
 
   .visitante-card {
     border: 1px solid $border-gray;
     border-radius: 10px;
     background: #f7f3e4;
-    padding: 16px;
-    margin: 12px 0;
+    padding: 12px;
+    margin: 10px 0;
   }
 
   .visitante-title {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: $dark-text;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 
   .visitante-item {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 10px;
 
     @media (max-width: 640px) {
       grid-template-columns: 1fr;
     }
+  }
+
+  .visitante-card input,
+  .visitante-card select {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    background-color: $white;
+    border-width: 1px;
   }
 
   .edad-item.invalid input,
@@ -178,11 +188,45 @@ form.form-card {
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
     background-color: #fff6f6;
   }
+  
+.select-wrapper {
+  position: relative;
+  width: 100%;
+
+  &::after {
+    content: '▾';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: $primary-green;
+    font-size: 1rem;
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    padding-right: 32px; // espacio para la flecha
+    cursor: pointer;
+  }
+}
+
+.visitante-card .select-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  select {
+    margin-bottom: 0;
+  }
+}
 
   button[type='submit'] {
     width: 100%;
-    padding: 14px 24px;
-    font-size: 1.05rem;
+    padding: 12px 20px;
+    font-size: 1rem;
     font-weight: 800;
     border: none;
     border-radius: 8px;
@@ -235,8 +279,8 @@ form.form-card {
     }
 
     @media (max-width: 768px) {
-      padding: 12px 20px;
-      font-size: 0.95rem;
+      padding: 10px 16px;
+      font-size: 0.9rem;
       margin-top: 12px;
     }
   }
@@ -279,27 +323,40 @@ form.form-card {
 .modal {
   background: $white;
   border-radius: 14px;
-  padding: 2rem;
-  max-width: 420px;
-  width: 90%;
+  padding: 1.25rem;        // ← menos padding
+  max-width: 340px;        // ← más angosto
+  width: 88%;
   text-align: center;
   border: 1px solid $border-gray;
   box-shadow: $shadow-lg;
 
+  @media (max-width: 480px) {
+    padding: 1rem;
+    max-width: 300px;
+    width: 85%;
+  }
+
   .modal-title {
+    font-size: 1.1rem;     // ← título más chico
     color: $brand-color;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     font-weight: 700;
+  }
+
+  p {
+    font-size: 0.85rem;    // ← texto más chico
+    margin: 6px 0;
   }
 
   .modal-mail {
     font-style: italic;
-    margin-top: 1rem;
+    font-size: 0.8rem;     // ← mail más chico
+    margin-top: 0.75rem;
     color: $dark-text;
   }
 
   .modal-actions {
-    margin-top: 1.5rem;
+    margin-top: 1rem;      // ← menos espacio arriba del botón
     display: flex;
     justify-content: center;
 
@@ -307,10 +364,11 @@ form.form-card {
       background: $brand-color;
       color: $white;
       border: none;
-      padding: 0.6rem 1.4rem;
+      padding: 0.5rem 1.2rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
+      font-size: 0.9rem;
       transition: $transition;
 
       &:hover {

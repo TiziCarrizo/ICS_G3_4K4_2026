@@ -29,6 +29,10 @@ $transition: all 0.3s ease;
     padding: 0;
   }
 
+  @media (max-width: 768px) {
+    min-height: auto;
+  }
+
   // Decorative background elements
   &::before {
     content: '';
@@ -103,7 +107,9 @@ $transition: all 0.3s ease;
     }
 
     @media (max-width: 768px) {
-      padding: 0 20px 30px 20px;
+      flex: 0 0 auto;
+      justify-content: flex-start;
+      padding: 16px 20px 24px 20px;
     }
   }
 

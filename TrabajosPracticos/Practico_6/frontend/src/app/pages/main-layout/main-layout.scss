@@ -25,10 +25,15 @@ $transition: all 0.3s ease;
   z-index: 100;
   border-bottom: 2px solid $border-color;
 
+  @media (max-width: 1024px) {
+    flex-wrap: wrap;
+    gap: 16px 24px;
+  }
+
   @media (max-width: 768px) {
-    flex-direction: column;
-    padding: 20px;
-    gap: 15px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    gap: 12px 20px;
     text-align: center;
   }
 
@@ -51,9 +56,13 @@ $transition: all 0.3s ease;
     }
 
     img {
-      height: 1000;
+      height: 64px;
       width: auto;
       display: block;
+
+      @media (max-width: 768px) {
+        height: 52px;
+      }
     }
   }
 
@@ -63,10 +72,18 @@ $transition: all 0.3s ease;
     flex: 1;
     justify-content: center;
 
+    @media (max-width: 1024px) {
+      order: 3;
+      flex-basis: 100%;
+      justify-content: center;
+    }
+
     @media (max-width: 768px) {
-      gap: 20px;
+      order: 3;
+      gap: 16px;
       flex-wrap: wrap;
       justify-content: center;
+      flex-basis: 100%;
     }
 
     a {
@@ -126,6 +143,18 @@ $transition: all 0.3s ease;
     align-items: center;
     gap: 15px;
     flex-shrink: 0;
+    flex-wrap: nowrap;
+
+    @media (max-width: 1024px) {
+      order: 2;
+      margin-left: auto;
+    }
+
+    @media (max-width: 768px) {
+      order: 2;
+      justify-content: flex-end;
+      // width: 100%;
+    }
 
     .user-icon {
       font-size: 1.8rem;
@@ -147,6 +176,7 @@ $transition: all 0.3s ease;
       background: linear-gradient(135deg, #eef3df 0%, #f2e8cf 100%);
       border-radius: 25px;
       font-size: 0.95rem;
+      white-space: nowrap;
 
       @media (max-width: 768px) {
         font-size: 0.85rem;
@@ -156,9 +186,14 @@ $transition: all 0.3s ease;
   }
 }
 
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 // Main Content Styles
 .app-content {
-  min-height: calc(100vh - 200px);
+  flex: 1;
   padding: 40px 20px;
   background: linear-gradient(135deg, #f2e8cf 0%, #e7f0d8 100%);
 
