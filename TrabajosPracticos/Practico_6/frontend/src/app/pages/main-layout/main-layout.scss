@@ -1,10 +1,10 @@
 // Variables
-$primary-green: #10b981;
-$secondary-blue: #0ea5e9;
-$accent-gold: #f59e0b;
+$primary-green: #386641;
+$secondary-blue: #6a994e;
+$accent-gold: #a7c957;
 $dark-text: #1f2937;
-$light-gray: #f3f4f6;
-$border-color: #e5e7eb;
+$light-gray: #f2e8cf;
+$border-color: #e7e0c7;
 $white: #ffffff;
 $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 $shadow-md: 0 4px 6px 0 rgba(0, 0, 0, 0.1);
@@ -13,7 +13,7 @@ $transition: all 0.3s ease;
 
 // Header Styles
 .header {
-  background: linear-gradient(135deg, $white 0%, #f9fafb 100%);
+  background: linear-gradient(135deg, $white 0%, #f2e8cf 100%);
   box-shadow: $shadow-md;
   padding: 20px 40px;
   display: flex;
@@ -43,9 +43,17 @@ $transition: all 0.3s ease;
     background-clip: text;
     letter-spacing: -0.5px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
 
     @media (max-width: 768px) {
       font-size: 1.5rem;
+    }
+
+    img {
+      height: 1000;
+      width: auto;
+      display: block;
     }
   }
 
@@ -64,7 +72,7 @@ $transition: all 0.3s ease;
     a {
       text-decoration: none;
       color: $dark-text;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 1rem;
       position: relative;
       padding: 8px 0;
@@ -133,10 +141,10 @@ $transition: all 0.3s ease;
     }
 
     span {
-      font-weight: 600;
+      font-weight: 700;
       color: $dark-text;
       padding: 10px 20px;
-      background: linear-gradient(135deg, #e0f2fe 0%, #e0fdf4 100%);
+      background: linear-gradient(135deg, #eef3df 0%, #f2e8cf 100%);
       border-radius: 25px;
       font-size: 0.95rem;
 
@@ -152,7 +160,7 @@ $transition: all 0.3s ease;
 .app-content {
   min-height: calc(100vh - 200px);
   padding: 40px 20px;
-  background: linear-gradient(135deg, #f9fafb 0%, #e8f5e9 100%);
+  background: linear-gradient(135deg, #f2e8cf 0%, #e7f0d8 100%);
 
   @media (max-width: 768px) {
     padding: 20px 15px;
@@ -162,8 +170,8 @@ $transition: all 0.3s ease;
 
 // Footer Styles
 .footer {
-  background: linear-gradient(135deg, $dark-text 0%, #374151 100%);
-  color: #d1d5db;
+  background: linear-gradient(135deg, $dark-text 0%, #2f3a2f 100%);
+  color: #e7e0c7;
   text-align: center;
   padding: 30px 40px;
   margin-top: 40px;
@@ -210,7 +218,7 @@ router-outlet {
   border-radius: 5px;
 
   &:hover {
-    background: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+    background: linear-gradient(135deg, #2f5a38 0%, #5c8a45 100%);
   }
 }
 

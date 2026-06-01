@@ -1,10 +1,18 @@
 <!-- Header   -->
 <header class="header">
-    <h1>EcoHarmony Park</h1>
+    <h1>
+        <img src="/logoEcoHarmony.png" alt="EcoHarmony Park" style="height: 80px; width: auto;">
+    </h1>
     <nav>
-         <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
-        <a routerLink="/comprar-entrada" routerLinkActive="active">Comprar Entradas</a>
-        <a routerLink="/senderos"><i class="fas fa-shopping-cart"></i> Mis compras</a>
+        <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <img src="house.png" alt="Inicio" style="width: 24px; height: 24px;"> Inicio
+        </a>
+        <a routerLink="/comprar-entrada" routerLinkActive="active">
+            <img src="entrada.png" alt="Comprar Entradas" style="width: 24px; height: 24px;"> Comprar Entradas
+        </a>
+        <a routerLink="/senderos">
+            <img src="shopping.png" alt="Mis compras" style="width: 24px; height: 24px;"> Mis compras
+        </a>
     </nav>
     <div class="user-info">
         <i class="fas fa-circle-user user-icon"></i>
