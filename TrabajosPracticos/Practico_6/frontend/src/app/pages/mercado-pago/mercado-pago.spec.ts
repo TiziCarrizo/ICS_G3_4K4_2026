@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { MercadoPago } from './mercado-pago';
-import { PagoTemporalService } from '../../services/formas-pago/pago-temporal.service';
 
 describe('MercadoPago', () => {
   let component: MercadoPago;
@@ -24,7 +23,6 @@ describe('MercadoPago', () => {
       imports: [MercadoPago, CommonModule, FormsModule],
       providers: [
         { provide: Router, useValue: routerStub },
-        { provide: PagoTemporalService, useValue: pagoTemporalStub },
         { provide: HttpClient, useValue: httpStub }
       ]
     }).compileComponents();

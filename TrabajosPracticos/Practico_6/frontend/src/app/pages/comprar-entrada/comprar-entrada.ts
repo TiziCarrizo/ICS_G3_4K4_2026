@@ -77,61 +77,58 @@ export class ComprarEntrada {
   // --- Método unificado y corregido ---
   async submitForm() {
     this.actualizarVisitantes();
-    
-    if (this.form.invalid) {
-      this.showValidationErrors = true;
-      this.form.markAllAsTouched();
-      setTimeout(() => {
-        const firstError = document.querySelector('.ng-invalid');
-        firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        (firstError as HTMLElement)?.focus?.();
-      }, 50);
-      return;
+
+        if (this.form.invalid) {
+            this.showValidationErrors = true;
+            this.form.markAllAsTouched();
+            setTimeout(() => {
+            const firstError = document.querySelector('.ng-invalid');
+            firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            (firstError as HTMLElement)?.focus?.();
+            }, 50);
+            return;
+        }
+
+        this.isSubmitting = true;
+        this.showValidationErrors = false;
+        this.submitError = '';
+
+        const payload = this.buildCompraPayload();
+        const formaPagoId = Number(this.form.get('formaPago')?.value);
+        const formaPagoNombre = this.getFormaPagoNombre(formaPagoId);
+
+        if (formaPagoNombre === 'TARJETA') {
+            this.router.navigate(['/mercado-pago'], { state: { payload } });
+            this.isSubmitting = false;
+            return;
+        }
+
+        try {
+            const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+            await firstValueFrom(
+            this.httpClient.post(`${this.apiBaseUrl}/api/compras/`, payload, { headers })
+            );
+
+            this.modalData = {
+            cantidad: this.visitantes.length,
+            fecha: this.form.get('fechaVisita')?.value,
+            total: this.visitantes.controls.reduce((acc, ctrl) => {
+                const tipoPaseNombre = this.getTipoPaseNombre(Number(ctrl.get('tipoPase')?.value));
+                const edad = Number(ctrl.get('edad')?.value);
+                return acc + this.getPrecioUnitario(tipoPaseNombre, edad);
+            }, 0)
+            };
+
+            this.showModal = true;
+            this.form.reset();
+            this.visitantes.clear();
+
+        } catch (error) {
+            await this.handleSubmitError(error);
+        } finally {
+            this.isSubmitting = false;
     }
-
-    this.isSubmitting = true;
-    this.showValidationErrors = false;
-    this.submitError = '';
-
-    const payload = this.buildCompraPayload();
-    const formaPagoId = Number(this.form.get('formaPago')?.value);
-    const formaPagoNombre = this.getFormaPagoNombre(formaPagoId);
-
-    try {
-      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-      // 1. Petición a la API
-      await firstValueFrom(
-        this.httpClient.post(`${this.apiBaseUrl}/api/compras/`, payload, { headers })
-      );
-
-      // 2. Si es tarjeta, redirigimos al simulador
-      if (formaPagoNombre === 'TARJETA') {
-        this.router.navigate(['/mercado-pago']);
-        return;
-      }
-
-      // 3. Si es efectivo, abrimos el modal
-      this.modalData = {
-        cantidad: this.visitantes.length,
-        fecha: this.form.get('fechaVisita')?.value,
-        total: this.visitantes.controls.reduce((acc, ctrl) => {
-          const tipoPaseNombre = this.getTipoPaseNombre(Number(ctrl.get('tipoPase')?.value));
-          const edad = Number(ctrl.get('edad')?.value);
-          return acc + this.getPrecioUnitario(tipoPaseNombre, edad);
-        }, 0)
-      };
-
-      this.showModal = true;
-      this.form.reset();
-      this.visitantes.clear();
-
-    } catch (error) {
-      await this.handleSubmitError(error);
-    } finally {
-      this.isSubmitting = false;
     }
-  }
 
   // --- El bloque de errores que había quedado suelto ---
   getValidationErrors(): string[] {

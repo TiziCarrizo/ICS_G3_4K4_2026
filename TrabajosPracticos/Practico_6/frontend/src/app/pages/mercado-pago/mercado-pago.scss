@@ -5,6 +5,12 @@
   justify-content: center;
   align-items: center;
   padding: 40px;
+
+  @media (max-width: 480px) {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 24px;
+  }
 }
 
 .mp-card {
@@ -14,6 +20,11 @@
   border-radius: 12px;
   padding: 32px;
   box-shadow: 0 4px 20px rgba(0,0,0,.12);
+
+  @media (max-width: 480px) {
+    padding: 20px 16px;
+    border-radius: 8px;
+  }
 }
 
 .mp-header {
@@ -23,11 +34,20 @@
 
 .mp-header h1 {
   color: #3483fa;
+
+  @media (max-width: 480px) {
+    font-size: 1.4rem;
+  }
 }
 
 h2 {
   text-align: center;
   margin-bottom: 25px;
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+  }
 }
 
 .form-group {
@@ -56,6 +76,11 @@ h2 {
 .row {
   display: flex;
   gap: 15px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
 .row .form-group {
@@ -73,6 +98,11 @@ h2 {
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    padding: 12px;
+  }
 }
 
 .btn-pagar:hover {
@@ -92,6 +122,10 @@ h2 {
   border-radius: 12px;
   text-align: center;
 
+  @media (max-width: 480px) {
+    padding: 16px;
+  }
+
   .exito-icono {
     font-size: 2.5rem;
     margin-bottom: 8px;
@@ -102,6 +136,10 @@ h2 {
     font-weight: 800;
     color: #00a650;
     margin-bottom: 6px;
+
+    @media (max-width: 480px) {
+      font-size: 1.1rem;
+    }
   }
 
   .exito-detalle {
