@@ -9,6 +9,12 @@ from .validators import (
 
 MERCADO_PAGO_BASE_URL = "https://www.mercadopago.com.ar/checkout/v1/redirect"
 
+def calcular_precio_real(tipo_pase_nombre, edad):
+    base = 20000.0 if tipo_pase_nombre == "VIP" else 10000.0
+    if edad <= 3: return 0.0
+    if edad <= 15 or edad >= 60: return base * 0.5
+    return base
+
 def procesar_compra(datos):
     # 1. Validaciones de negocio puras
     validar_usuario_registrado(datos.get("usuario"))
@@ -17,46 +23,70 @@ def procesar_compra(datos):
     validar_forma_pago(datos.get("forma_pago"))
     validar_edades_visitantes(datos.get("entradas"))
     
-    # 2. Buscar las entidades reales en la BD
+    # 2. Buscar entidades
     usuario = Usuario.objects.get(id=datos["usuario"]["id"])
     forma_pago = FormaPago.objects.get(nombre=datos["forma_pago"])
-    
     entradas_data = datos.get("entradas", [])
-    cantidad = len(entradas_data)
     
-    # Calculamos el monto total sumando los precios unitarios
-    monto_total = sum(item["precio_unitario"] for item in entradas_data)
-    
-    # 3. Transacción atómica para guardar todo junto
+    # 3. Transacción atómica
     with transaction.atomic():
+        monto_total = sum(calcular_precio_real(item["tipo_pase"], item["edad"]) for item in entradas_data)
+        
         nueva_compra = Compra.objects.create(
             usuario=usuario,
             fecha=datos["fecha"],
-            cantidad_entradas=cantidad,
+            cantidad_entradas=len(entradas_data),
             monto_total=monto_total,
             forma_pago=forma_pago,
             mercado_pago_redirect_url=None
         )
         
-        # --- CÓDIGO NUEVO (GREEN): Generar link si es tarjeta ---
         if datos["forma_pago"] == "TARJETA":
-            # Usamos la constante MERCADO_PAGO_BASE_URL que ya tenés arriba
             nueva_compra.mercado_pago_redirect_url = f"{MERCADO_PAGO_BASE_URL}?pref_id=COMPRA-{nueva_compra.id}"
-            nueva_compra.save(update_fields=['mercado_pago_redirect_url'])
-        # --------------------------------------------------------
+            nueva_compra.save()
         
         for item in entradas_data:
             tipo_entrada = TipoEntrada.objects.get(nombre=item["tipo_pase"])
+            precio_real = calcular_precio_real(item["tipo_pase"], item["edad"])
             Entrada.objects.create(
                 compra=nueva_compra,
                 edad=item["edad"],
                 tipo_entrada=tipo_entrada,
-                precio_unitario=item["precio_unitario"]
+                precio_unitario=precio_real
             )
-            
-        # --- NUEVO CÓDIGO PARA MERCADO PAGO ---
-        if datos["forma_pago"] == "TARJETA":
-            nueva_compra.mercado_pago_redirect_url = f"{MERCADO_PAGO_BASE_URL}?pref_id=COMPRA-{nueva_compra.id}"
-            nueva_compra.save()
-            
+
+    # 4. Envío de email (fuera de la transacción para no bloquear si falla el mail)
+    email_destino = datos.get("email_confirmacion") or usuario.email
+    detalle = "\n".join(
+        f"  - Entrada {i+1}: {item['tipo_pase']} | Edad: {item['edad']} años | ${calcular_precio_real(item['tipo_pase'], item['edad']):,.0f}"
+        for i, item in enumerate(entradas_data)
+    )
+    forma_pago_texto = "Tarjeta de crédito (Mercado Pago)" if datos["forma_pago"] == "TARJETA" else "Efectivo en boletería"
+    mp_linea = f"\nCompletá tu pago en Mercado Pago:\n{nueva_compra.mercado_pago_redirect_url}\n" if nueva_compra.mercado_pago_redirect_url else ""
+    
+    cuerpo = (
+        f"Hola {usuario.nombre} {usuario.apellido},\n\n"
+        f"¡Tu compra en EcoHarmony Park fue confirmada!\n\n"
+        f"  N.° de compra:    #{nueva_compra.id}\n"
+        f"  Fecha de visita:  {nueva_compra.fecha.strftime('%d/%m/%Y')}\n"
+        f"  Cantidad entradas: {nueva_compra.cantidad_entradas}\n"
+        f"  Forma de pago:    {forma_pago_texto}\n\n"
+        f"Detalle de entradas:\n{detalle}\n\n"
+        f"  TOTAL:  ${nueva_compra.monto_total:,.0f}\n"
+        f"{mp_linea}\n"
+        f"¡Te esperamos en EcoHarmony Park!\n"
+        f"El equipo de EcoHarmony Park"
+    )
+    
+    try:
+        send_mail(
+            subject=f"Confirmación de compra #{nueva_compra.id} - EcoHarmony Park",
+            message=cuerpo,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email_destino],
+            fail_silently=False,
+        )
+    except Exception as e:
+        print(f"[EMAIL ERROR] No se pudo enviar a {email_destino}: {e}")
+
     return nueva_compra

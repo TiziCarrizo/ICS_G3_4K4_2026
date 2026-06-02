@@ -67,10 +67,9 @@ def test_validar_edades_rechaza_edades_mayores_a_99():
 
 
 # --- TEST DEL CAMINO FELIZ (CON LOOP Y RELACIÓN 1 a N) ---
-
 @pytest.mark.django_db
 def test_procesar_compra_exitosa_guarda_con_esquema_completo(fecha_futura):
-    # Arrange: Simulamos que en la BD ya existen estos registros básicos
+    # Arrange
     usuario_real = Usuario.objects.create(nombre="Alexis", apellido="G", email="alexis@test.com")
     forma_tarjeta = FormaPago.objects.create(nombre="TARJETA")
     tipo_vip = TipoEntrada.objects.create(nombre="VIP")
@@ -81,20 +80,21 @@ def test_procesar_compra_exitosa_guarda_con_esquema_completo(fecha_futura):
         "fecha": fecha_futura,
         "forma_pago": "TARJETA",
         "entradas": [
-            {"edad": 25, "tipo_pase": "VIP", "precio_unitario": 5000.0},
-            {"edad": 12, "tipo_pase": "REGULAR", "precio_unitario": 2500.0}
+            {"edad": 25, "tipo_pase": "VIP"},    
+            {"edad": 12, "tipo_pase": "REGULAR"}   
         ]
     }
     
-    # Act
+    # Act: Procesamos una sola vez
     compra_procesada = procesar_compra(datos_compra)
     
+    # Assert
     assert Compra.objects.count() == 1
     assert Entrada.objects.count() == 2
     assert compra_procesada.cantidad_entradas == 2
-    assert compra_procesada.monto_total == 7500.0 
+    assert compra_procesada.monto_total == 25000.0  # El total real es 20000 + 5000
     assert compra_procesada.usuario == usuario_real
-
+    
 # --- TESTS DE MERCADO PAGO ---
 
 @pytest.mark.django_db
