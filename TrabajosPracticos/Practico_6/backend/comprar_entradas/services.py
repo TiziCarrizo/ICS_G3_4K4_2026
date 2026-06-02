@@ -5,6 +5,8 @@ from .validators import (
     validar_fecha_visita, validar_forma_pago
 )
 
+MERCADO_PAGO_BASE_URL = "https://www.mercadopago.com.ar/checkout/v1/redirect"
+
 def procesar_compra(datos):
     # 1. Validaciones de negocio puras
     validar_usuario_registrado(datos.get("usuario"))
@@ -41,5 +43,10 @@ def procesar_compra(datos):
                 tipo_entrada=tipo_entrada,
                 precio_unitario=item["precio_unitario"]
             )
+            
+        # --- NUEVO CÓDIGO PARA MERCADO PAGO ---
+        if datos["forma_pago"] == "TARJETA":
+            nueva_compra.mercado_pago_redirect_url = f"{MERCADO_PAGO_BASE_URL}?pref_id=COMPRA-{nueva_compra.id}"
+            nueva_compra.save()
             
     return nueva_compra

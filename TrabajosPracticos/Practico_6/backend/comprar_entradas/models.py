@@ -30,7 +30,7 @@ class Compra(models.Model):
     monto_total = models.FloatField()
     forma_pago = models.ForeignKey(FormaPago, on_delete=models.RESTRICT)
     usuario = models.ForeignKey(Usuario, on_delete=models.RESTRICT)
-    mercado_pago_redirect_url = models.TextField(null=True, blank=True)
+    mercado_pago_redirect_url = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"Compra {self.id} - Usuario {self.usuario.nombre} - Total: ${self.monto_total}"
