@@ -38,17 +38,18 @@ export class ComprarEntrada {
     showModal = false;
     modalData = { cantidad: 0, fecha: '', total: 0 };
     mockUser = MOCK_USER;
+    showValidationErrors = false;
   // Aquí puedes definir las propiedades y método necesarios para tu componente
   constructor(
-  private fb: FormBuilder,
-  private tiposPaseDb: TiposPaseDb,
-  private formasPagoDb: FormasPagoDb,
-  private httpClient: HttpClient,
-  private router: Router,
-  private pagoTemporal: PagoTemporalService
-) {
-  this.form = this.buildForm();
-}
+        private fb: FormBuilder,
+        private tiposPaseDb: TiposPaseDb,
+        private formasPagoDb: FormasPagoDb,
+        private httpClient: HttpClient,
+        private pagoTemporal: PagoTemporalService,
+        private router: Router
+    ) {
+        this.form = this.buildForm();
+    }
 
         ngOnInit() {
             return;
@@ -81,69 +82,97 @@ export class ComprarEntrada {
     // Método para manejar el envío del formulario
         // Reemplazá el submitForm() completo
     async submitForm() {
-    if (this.form.invalid) {
-        this.form.markAllAsTouched();
-        return;
+        this.actualizarVisitantes();
+        if (this.form.invalid) {
+            this.showValidationErrors = true;
+            this.form.markAllAsTouched();
+                // Scroll al primer error
+                setTimeout(() => {
+                const firstError = document.querySelector('.ng-invalid');
+                firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                (firstError as HTMLElement)?.focus?.();
+                }, 50);
+                return;
+            }
+        this.isSubmitting = true;
+        this.showValidationErrors = false;
+        this.submitError = '';
+
+        const payload = this.buildCompraPayload();
+        if (payload.forma_pago === 'TARJETA') {
+            this.pagoTemporal.compraPendiente = payload;
+            this.isSubmitting = false;
+            this.router.navigate(['/mercado-pago']);
+            return;
+        }
+
+        try {
+            const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+            await firstValueFrom(
+                this.httpClient.post(`${this.apiBaseUrl}/api/compras/`, payload, { headers })
+            );
+
+            this.modalData = {
+                cantidad: this.visitantes.length,
+                fecha: this.form.get('fechaVisita')?.value,
+                total: this.visitantes.controls.reduce((acc, ctrl) => {
+                    const tipoPaseNombre = this.getTipoPaseNombre(Number(ctrl.get('tipoPase')?.value));
+                    const edad = Number(ctrl.get('edad')?.value);
+                    return acc + this.getPrecioUnitario(tipoPaseNombre, edad);
+                }, 0)
+            };
+
+            this.showModal = true;
+            this.form.reset();
+            this.visitantes.clear();
+
+        } catch (error) {
+            await this.handleSubmitError(error);
+        } finally {
+            this.isSubmitting = false;
+        }
     }
 
-    this.isSubmitting = true;
-    this.submitError = '';
-
-    const payload = this.buildCompraPayload();
-
-    const formaPagoId = Number(this.form.get('formaPago')?.value);
-    const formaPagoNombre = this.getFormaPagoNombre(formaPagoId);
-
-    if (formaPagoNombre === 'TARJETA') {
-
-        this.pagoTemporal.compraPendiente = payload;
-
-        this.router.navigate(['/mercado-pago']);
-
-        this.isSubmitting = false;
-
-        return;
-    }
-
-    try {
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
-        });
-
-        await firstValueFrom(
-            this.httpClient.post(
-                `${this.apiBaseUrl}/api/compras/`,
-                payload,
-                { headers }
-            )
-        );
-
-        this.modalData = {
-            cantidad: this.visitantes.length,
-            fecha: this.form.get('fechaVisita')?.value,
-            total: this.visitantes.controls.reduce((acc, ctrl) => {
-                const tipoPaseNombre = this.getTipoPaseNombre(
-                    Number(ctrl.get('tipoPase')?.value)
-                );
-                const edad = Number(ctrl.get('edad')?.value);
-
-                return acc + this.getPrecioUnitario(
-                    tipoPaseNombre,
-                    edad
-                );
-            }, 0)
+    getValidationErrors(): string[] {
+        const errors: string[] = [];
+        const pushUnique = (message: string) => {
+            if (!errors.includes(message)) errors.push(message);
         };
 
-        this.showModal = true;
-        this.form.reset();
-        this.visitantes.clear();
+        const fechaCtrl = this.form.get('fechaVisita');
+        if (fechaCtrl?.hasError('required')) pushUnique('La fecha de visita es obligatoria.');
+        if (fechaCtrl?.hasError('fechaPasada')) pushUnique('La fecha de visita no puede ser en el pasado.');
+        if (fechaCtrl?.hasError('parqueCerrado')) pushUnique('El parque esta cerrado ese dia.');
 
-    } catch (error) {
-        await this.handleSubmitError(error);
-    } finally {
-        this.isSubmitting = false;
+        const cantidadCtrl = this.form.get('cantidadEntradas');
+        if (cantidadCtrl?.hasError('required')) pushUnique('La cantidad de entradas es obligatoria.');
+        if (cantidadCtrl?.hasError('pattern')) pushUnique('La cantidad de entradas debe ser un numero entero.');
+        if (cantidadCtrl?.hasError('min') || cantidadCtrl?.hasError('max')) {
+            pushUnique('La cantidad de entradas debe estar entre 1 y 10.');
+        }
+
+        if (this.form.get('visitantes')?.hasError('visitantesNoCoinciden')) {
+            pushUnique('La cantidad de visitantes debe coincidir con la cantidad de entradas.');
+        }
+
+        this.visitantes.controls.forEach((ctrl, index) => {
+            const edadCtrl = ctrl.get('edad');
+            if (edadCtrl?.hasError('required')) pushUnique(`La edad del visitante ${index + 1} es obligatoria.`);
+            if (edadCtrl?.hasError('pattern')) pushUnique(`La edad del visitante ${index + 1} debe ser un numero entero.`);
+            if (edadCtrl?.hasError('min')) pushUnique(`La edad del visitante ${index + 1} no puede ser menor a 0.`);
+            if (edadCtrl?.hasError('max')) pushUnique(`La edad del visitante ${index + 1} no puede ser mayor a 99.`);
+
+            const paseCtrl = ctrl.get('tipoPase');
+            if (paseCtrl?.hasError('required')) {
+                pushUnique(`Selecciona un tipo de pase para el visitante ${index + 1}.`);
+            }
+        });
+
+        const formaPagoCtrl = this.form.get('formaPago');
+        if (formaPagoCtrl?.hasError('required')) pushUnique('Selecciona la forma de pago.');
+
+        return errors;
     }
-}
 
         cerrarModal() {
             this.showModal = false;
