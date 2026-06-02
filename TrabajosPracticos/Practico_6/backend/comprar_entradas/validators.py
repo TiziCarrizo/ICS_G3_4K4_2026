@@ -31,3 +31,25 @@ def validar_edades_visitantes(entradas):
         
         if edad is None or int(edad) < 0 or int(edad) > 99:
             raise ValueError("La edad del visitante debe estar entre 0 y 99 años")
+
+def validar_cantidad_entradas(entradas):
+
+    if not isinstance(entradas, list):
+        raise ValueError("El campo entradas debe ser una lista válida")
+        
+    if not entradas:
+        raise ValueError("Debe ingresar al menos una entrada")
+    if len(entradas) > 10:
+        raise ValueError("La cantidad de entradas supera el máximo permitido")
+
+
+def validar_edades_visitantes(entradas):
+    for entrada in entradas:
+        edad = entrada.get("edad")
+        
+        if not isinstance(edad, int) or isinstance(edad, bool):
+            raise ValueError("La edad debe ser un número entero")
+            
+        # 2. Validamos el rango lógico
+        if edad < 0 or edad > 99:
+            raise ValueError("La edad del visitante debe estar entre 0 y 99 años")
