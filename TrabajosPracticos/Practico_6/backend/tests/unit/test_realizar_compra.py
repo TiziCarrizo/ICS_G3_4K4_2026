@@ -88,6 +88,12 @@ def test_validar_cantidad_entradas_rechaza_formato_incorrecto():
     with pytest.raises(ValueError, match="El campo entradas debe ser una lista válida"):
         validar_cantidad_entradas(entradas_decimal)
 
+def test_validar_cantidad_entradas_rechaza_negativos():
+    entradas_negativas = -5
+    
+    with pytest.raises(ValueError, match="La cantidad de entradas no puede ser negativa"):
+        validar_cantidad_entradas(entradas_negativas)
+
 
 # --- TEST DEL CAMINO FELIZ (CON LOOP Y RELACIÓN 1 a N) ---
 @pytest.mark.django_db
@@ -228,4 +234,27 @@ def test_api_realizar_compra_retorna_400_si_falta_dato_clave(client):
         content_type='application/json'
     )
     
-    assert response.status_code == 400 
+    assert response.status_code == 400
+
+@pytest.mark.django_db
+def test_api_realizar_compra_retorna_400_si_formato_fecha_es_invalido(client):
+    usuario_real = Usuario.objects.create(nombre="Fecha", apellido="Invalida", email="fecha@test.com")
+    FormaPago.objects.create(nombre="TARJETA")
+    
+    payload_fecha_invalida = {
+        "usuario": {"id": usuario_real.id, "nombre": usuario_real.nombre},
+        "fecha": "25/12/2026",  
+        "forma_pago": "TARJETA",
+        "entradas": [{"edad": 25, "tipo_pase": "VIP"}]
+    }
+    
+    response = client.post(
+        '/api/compras/', 
+        data=json.dumps(payload_fecha_invalida),
+        content_type='application/json'
+    )
+    
+    assert response.status_code == 400
+    
+    data = response.json()
+    assert "error" in data 
