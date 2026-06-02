@@ -79,7 +79,7 @@ export class ComprarEntrada {
       }
 
     // Método para manejar el envío del formulario
-        // Reemplazá el submitForm() completo
+        
     async submitForm() {
     if (this.form.invalid) {
         this.form.markAllAsTouched();
@@ -90,26 +90,15 @@ export class ComprarEntrada {
     this.submitError = '';
 
     const payload = this.buildCompraPayload();
-
     const formaPagoId = Number(this.form.get('formaPago')?.value);
     const formaPagoNombre = this.getFormaPagoNombre(formaPagoId);
-
-    if (formaPagoNombre === 'TARJETA') {
-
-        this.pagoTemporal.compraPendiente = payload;
-
-        this.router.navigate(['/mercado-pago']);
-
-        this.isSubmitting = false;
-
-        return;
-    }
 
     try {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
 
+        // 1. Hacemos la petición real a tu API en Django SIEMPRE
         await firstValueFrom(
             this.httpClient.post(
                 `${this.apiBaseUrl}/api/compras/`,
@@ -118,6 +107,15 @@ export class ComprarEntrada {
             )
         );
 
+        // --- CÓDIGO NUEVO (GREEN) ---
+        // 2. Si es tarjeta, la compra ya se guardó. Redirigimos a tu simulador.
+        if (formaPagoNombre === 'TARJETA') {
+            this.router.navigate(['/mercado-pago']);
+            return; // Cortamos la ejecución acá para no mostrar el modal
+        }
+        // ----------------------------
+
+        // 3. Si es en efectivo, armamos y mostramos el modal normal
         this.modalData = {
             cantidad: this.visitantes.length,
             fecha: this.form.get('fechaVisita')?.value,
@@ -143,6 +141,7 @@ export class ComprarEntrada {
     } finally {
         this.isSubmitting = false;
     }
+
 }
 
         cerrarModal() {
