@@ -14,13 +14,16 @@ def api_realizar_compra(request):
     try:
         datos = json.loads(request.body)
         
-        # Parseo de fecha
+        claves_obligatorias = ["usuario", "fecha", "forma_pago", "entradas"]
+        for clave in claves_obligatorias:
+            if clave not in datos:
+                return JsonResponse({"error": f"Falta el dato obligatorio: {clave}"}, status=400)
+        
         if "fecha" in datos and isinstance(datos["fecha"], str):
             datos["fecha"] = datetime.strptime(datos["fecha"], "%Y-%m-%d").date()
         
         compra = procesar_compra(datos)
         
-        # Armamos la respuesta incluyendo el link de Mercado Pago
         respuesta = {
             "mensaje": "Compra procesada exitosamente",
             "mercado_pago_redirect_url": compra.mercado_pago_redirect_url
@@ -30,9 +33,13 @@ def api_realizar_compra(request):
         
     except json.JSONDecodeError:
         return JsonResponse({"error": "Formato JSON inválido"}, status=400)
+        
+    except KeyError as e:
+        # Atrapa si falta 'fecha', 'entradas', 'usuario', etc. en el JSON payload
+        return JsonResponse({"error": f"Faltan datos obligatorios en la petición: {str(e)}"}, status=400)
     except ValueError as e:
         # Atrapa errores de validación de negocio (ej. "El parque está cerrado")
-        return JsonResponse({"error": str(e)}, status=400)
+        return JsonResponse({"error": str(e)}, status=400) 
     except ObjectDoesNotExist:
         # Atrapa errores si no encuentra el Usuario, FormaPago o TipoEntrada en la BD
         return JsonResponse({"error": "Dato paramétrico no encontrado en la base de datos"}, status=404)
