@@ -23,6 +23,7 @@ export class MercadoPago {
   procesando = false;
   pagoExitoso = false;
   private payload: any;
+  private modalData: any;
 
 constructor(
     private router: Router,
@@ -30,6 +31,7 @@ constructor(
   ) {
     const nav = this.router.getCurrentNavigation();
     this.payload = nav?.extras?.state?.['payload'];
+    this.modalData = nav?.extras?.state?.['modalData'];
   }
 
   formatearVencimiento() {
@@ -60,13 +62,18 @@ constructor(
   this.httpClient.post('http://127.0.0.1:8000/api/compras/', this.payload, { headers })
     .subscribe({
       next: () => {
-        setTimeout(() => {
-          this.procesando = false;
-          this.pagoExitoso = true;
           setTimeout(() => {
-            this.router.navigate(['/mis-compras']);
+              this.procesando = false;
+              this.pagoExitoso = true;
+              setTimeout(() => {
+                  this.router.navigate(['/comprar-entrada'], {   // ← cambiar ruta
+                      state: {
+                          mostrarModal: true,
+                          modalData: this.modalData
+                      }
+                  });
+              }, 500);
           }, 500);
-        }, 500);
       },
       error: () => {
         this.procesando = false;
