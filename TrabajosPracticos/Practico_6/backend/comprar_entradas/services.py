@@ -4,7 +4,7 @@ from django.conf import settings
 from .models import Compra, Entrada, Usuario, FormaPago, TipoEntrada
 from .validators import (
     validar_usuario_registrado, validar_cantidad_entradas,
-    validar_fecha_visita, validar_forma_pago
+    validar_fecha_visita, validar_forma_pago, validar_edades_visitantes
 )
 
 MERCADO_PAGO_BASE_URL = "https://www.mercadopago.com.ar/checkout/v1/redirect"
@@ -15,6 +15,7 @@ def procesar_compra(datos):
     validar_cantidad_entradas(datos.get("entradas"))
     validar_fecha_visita(datos.get("fecha"))
     validar_forma_pago(datos.get("forma_pago"))
+    validar_edades_visitantes(datos.get("entradas"))
     
     # 2. Buscar las entidades reales en la BD
     usuario = Usuario.objects.get(id=datos["usuario"]["id"])
