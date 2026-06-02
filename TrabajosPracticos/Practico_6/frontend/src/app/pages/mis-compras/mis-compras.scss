@@ -1,12 +1,16 @@
-$verde-oscuro: #386641;
-$verde-medio: #6a994e;
-$crema: #f2e8cf;
-$rojo: #bc4749;
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700&display=swap');
+
+$verde-oscuro:  #386641;
+$verde-medio:   #6a994e;
+$verde-lima:    #a7c957;   // ← agregado
+$crema:         #f2e8cf;
+$rojo:          #bc4749;
 
 .mis-compras {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  font-family: 'Lato', sans-serif;   // ← fuente aplicada
 
   h2 {
     color: $verde-oscuro;
@@ -22,7 +26,7 @@ $rojo: #bc4749;
   .estado {
     text-align: center;
     padding: 2rem;
-    color: #666;
+    color: rgba($verde-oscuro, 0.5);  // ← en lugar de #666
     font-size: 1rem;
 
     &.error { color: $rojo; }
@@ -45,10 +49,10 @@ $rojo: #bc4749;
 
   .compra-card {
     background: white;
-    border: 1px solid #ddd;
+    border: 1px solid rgba($verde-oscuro, 0.15);  // ← en lugar de #ddd
     border-radius: 12px;
     padding: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba($verde-oscuro, 0.08);
   }
 
   .compra-header {
@@ -57,8 +61,8 @@ $rojo: #bc4749;
     align-items: center;
     margin-bottom: 0.5rem;
 
-    .compra-id { font-weight: 700; color: $verde-oscuro; }
-    .compra-fecha { color: #555; font-size: 0.9rem; }
+    .compra-id    { font-weight: 700; color: $verde-oscuro; }
+    .compra-fecha { color: rgba($verde-oscuro, 0.6); font-size: 0.9rem; }  // ← #555
     .compra-monto { font-weight: 700; color: $verde-medio; font-size: 1.1rem; }
   }
 
@@ -66,7 +70,7 @@ $rojo: #bc4749;
     display: flex;
     gap: 1rem;
     font-size: 0.9rem;
-    color: #666;
+    color: rgba($verde-oscuro, 0.5);  // ← #666
     margin-bottom: 0.75rem;
 
     .forma-pago { font-style: italic; }
@@ -88,15 +92,16 @@ $rojo: #bc4749;
     font-weight: 500;
   }
 
+  // ← mp-banner ahora usa paleta propia
   .mp-banner {
     margin-top: 0.75rem;
     padding: 0.5rem 1rem;
-    background: #fff3cd;
+    background: rgba($verde-lima, 0.15);
     border-radius: 8px;
-    border-left: 4px solid #ffc107;
+    border-left: 4px solid $verde-lima;
 
     a {
-      color: #856404;
+      color: $verde-oscuro;
       font-weight: 600;
       text-decoration: none;
       &:hover { text-decoration: underline; }
