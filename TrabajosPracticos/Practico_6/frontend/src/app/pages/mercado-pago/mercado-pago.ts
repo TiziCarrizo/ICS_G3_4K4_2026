@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { PagoTemporalService } from '../../services/formas-pago/pago-temporal.service';
+
 
 @Component({
   selector: 'app-mercado-pago',
@@ -23,10 +23,9 @@ export class MercadoPago {
   pagoExitoso = false;
 
 constructor(
-  private router: Router,
-  private pagoTemporal: PagoTemporalService,
-  private httpClient: HttpClient
-) {}
+    private router: Router,
+    private httpClient: HttpClient
+  ) {}
 
   formatearVencimiento() {
     let valor = this.vencimiento.replace(/\D/g, '');

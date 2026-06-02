@@ -8,7 +8,7 @@ import { FormaPago, FormasPagoDb } from '../../services/formas-pago/formas-pago-
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { MOCK_USER } from '../../app';
-import { PagoTemporalService } from '../../services/formas-pago/pago-temporal.service';
+
 
 
 
@@ -40,15 +40,14 @@ export class ComprarEntrada {
     mockUser = MOCK_USER;
   // Aquí puedes definir las propiedades y método necesarios para tu componente
   constructor(
-  private fb: FormBuilder,
-  private tiposPaseDb: TiposPaseDb,
-  private formasPagoDb: FormasPagoDb,
-  private httpClient: HttpClient,
-  private router: Router,
-  private pagoTemporal: PagoTemporalService
-) {
-  this.form = this.buildForm();
-}
+    private fb: FormBuilder,
+    private tiposPaseDb: TiposPaseDb,
+    private formasPagoDb: FormasPagoDb,
+    private httpClient: HttpClient,
+    private router: Router
+  ) {
+    this.form = this.buildForm();
+  }
 
         ngOnInit() {
             return;
