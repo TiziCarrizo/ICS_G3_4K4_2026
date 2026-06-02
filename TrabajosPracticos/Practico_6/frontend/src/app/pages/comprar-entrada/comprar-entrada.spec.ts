@@ -237,4 +237,45 @@ describe('ComprarEntrada', () => {
     const precio = (component as any).getPrecioUnitario('VIP', 30);
     expect(precio).toBe(20000);
   });
+
+  it('debería guardar la compra en la API y luego redirigir a la simulación de Mercado Pago', async () => {
+    // Espiamos el router de forma manual (Vanilla JS) para evitar el error TS2304
+    let rutaNavegada: string[] = [];
+    (component as any).router.navigate = (ruta: string[]) => {
+      rutaNavegada = ruta;
+      return Promise.resolve(true);
+    };
+
+    // Calculamos un martes futuro válido
+    const martes = (() => {
+      const d = new Date();
+      d.setDate(d.getDate() + ((2 + 7 - d.getDay()) % 7 || 7));
+      return d.toISOString().split('T')[0];
+    })();
+
+    // Llenamos el formulario simulando que elegimos TARJETA
+    component.form.get('fechaVisita')?.setValue(martes);
+    component.form.get('cantidadEntradas')?.setValue(1);
+    component.actualizarVisitantes();
+    component.visitantes.at(0).setValue({ edad: 30, tipoPase: 2 }); // Regular
+    component.form.get('formaPago')?.setValue(2); // 2 = TARJETA
+
+    // Disparamos el submit
+    const submitPromise = component.submitForm();
+
+    // Simulamos que el backend de Django guardó la compra y nos responde OK
+    const req = httpMock.expectOne('http://127.0.0.1:8000/api/compras/');
+    req.flush({
+        mensaje: 'Compra procesada exitosamente',
+        mercado_pago_redirect_url: 'https://url-real-que-vamos-a-ignorar.com'
+    });
+
+    await submitPromise;
+
+    // Exigimos que el código nos mande a la pantalla simulada
+    expect(rutaNavegada).toEqual(['/mercado-pago']);
+    
+    // Exigimos que NO se abra el modal estándar de éxito
+    expect(component.showModal).toBe(false);
+  });
 });
