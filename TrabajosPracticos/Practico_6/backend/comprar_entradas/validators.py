@@ -14,6 +14,9 @@ def validar_fecha_visita(fecha):
         raise ValueError("La fecha de visita no puede ser una fecha pasada") 
     if fecha.weekday() == 0:  
         raise ValueError("El parque está cerrado los lunes")
+        
+    if (fecha.month == 12 and fecha.day == 25) or (fecha.month == 1 and fecha.day == 1):
+        raise ValueError("El parque está cerrado los días festivos")
 
 def validar_forma_pago(forma_pago):
     if forma_pago not in ["EFECTIVO", "TARJETA"]:
