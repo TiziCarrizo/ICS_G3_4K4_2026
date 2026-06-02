@@ -86,12 +86,35 @@ h2 {
 
 .mensaje-exito {
   margin-top: 20px;
-  padding: 15px;
-  background: #e8f7e8;
-  color: #1b5e20;
-  border-radius: 8px;
+  padding: 24px;
+  background: #f0fff4;
+  border: 1.5px solid #00a650;
+  border-radius: 12px;
   text-align: center;
-  font-weight: bold;
+
+  .exito-icono {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+  }
+
+  .exito-titulo {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #00a650;
+    margin-bottom: 6px;
+  }
+
+  .exito-detalle {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .exito-redireccion {
+    font-size: 0.85rem;
+    color: #888;
+    font-style: italic;
+  }
 }
 
 .seguridad {

@@ -14,10 +14,10 @@ import { PagoTemporalService } from '../../services/formas-pago/pago-temporal.se
 })
 export class MercadoPago {
 
-  numeroTarjeta = '';
-  titular = '';
-  vencimiento = '';
-  cvv = '';
+  numeroTarjeta = '4509953566233704';
+  titular = 'Manuel Dávila';
+  vencimiento = '12/30';
+  cvv = '123';
 
   procesando = false;
   pagoExitoso = false;

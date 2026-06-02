@@ -15,6 +15,7 @@
         type="text"
         maxlength="16"
         [(ngModel)]="numeroTarjeta"
+        [disabled]="true"
         placeholder="4509953566233704">
     </div>
 
@@ -25,6 +26,7 @@
         type="text"
         maxlength="30"
         [(ngModel)]="titular"
+        [disabled]="true"
         placeholder="Juan Pérez">
     </div>
 
@@ -37,6 +39,7 @@
           type="text"
           maxlength="5"
           [(ngModel)]="vencimiento"
+          [disabled]="true"
           (input)="formatearVencimiento()"
           placeholder="12/30">
       </div>
@@ -48,6 +51,7 @@
           type="password"
           maxlength="3"
           [(ngModel)]="cvv"
+          [disabled]="true"
           placeholder="123">
       </div>
 
@@ -69,11 +73,11 @@
     </button>
 
     <div *ngIf="pagoExitoso" class="mensaje-exito">
-      ✅ Pago realizado con éxito
-      <br>
-      Redirigiendo a Mis Compras...
+      <div class="exito-icono">✅</div>
+      <div class="exito-titulo">¡Pago aprobado!</div>
+      <div class="exito-detalle">Tu compra fue procesada con éxito.</div>
+      <div class="exito-redireccion">Redirigiendo a Mis Compras...</div>
     </div>
-
     <div class="seguridad">
       🔒 Pago protegido por Mercado Pago
     </div>
