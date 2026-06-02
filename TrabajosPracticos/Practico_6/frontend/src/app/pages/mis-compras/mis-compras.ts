@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -36,7 +36,7 @@ export class MisCompras implements OnInit {
 
   private apiBaseUrl = 'http://127.0.0.1:8000';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.http.get<{ compras: CompraHistorial[] }>(
@@ -45,10 +45,12 @@ export class MisCompras implements OnInit {
       next: (res) => {
         this.compras = res.compras;
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.error = 'No se pudieron cargar tus compras. Intentá de nuevo más tarde.';
         this.cargando = false;
+        this.cdr.detectChanges();
       }
     });
   }
