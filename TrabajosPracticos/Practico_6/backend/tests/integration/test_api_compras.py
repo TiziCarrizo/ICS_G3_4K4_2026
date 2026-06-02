@@ -5,9 +5,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 @pytest.mark.django_db
 def test_api_realizar_compra_endpoint_retorna_201_y_link_mp(client):
-    usuario_real = Usuario.objects.create(nombre="Alexis", apellido="Felippa", email="alexis@test.com")
-    FormaPago.objects.create(nombre="TARJETA")
-    TipoEntrada.objects.create(nombre="VIP")
+    usuario_real = Usuario.objects.get_or_create(nombre="Alexis", apellido="Felippa", email="alexis_integracion@test.com")[0]
+    FormaPago.objects.get_or_create(nombre="TARJETA")[0]
+    TipoEntrada.objects.get_or_create(nombre="VIP")[0]
     
     payload = {
         "usuario": {"id": usuario_real.id, "nombre": usuario_real.nombre},
@@ -35,8 +35,8 @@ def test_api_realizar_compra_endpoint_retorna_201_y_link_mp(client):
 @pytest.mark.django_db
 def test_api_realizar_compra_retorna_404_si_usuario_no_existe(client):
    
-    FormaPago.objects.create(nombre="TARJETA")
-    TipoEntrada.objects.create(nombre="VIP")
+    FormaPago.objects.get_or_create(nombre="TARJETA")[0]
+    TipoEntrada.objects.get_or_create(nombre="VIP")[0]
     
     payload = {
         "usuario": {"id": 999, "nombre": "Usuario Fantasma"},
@@ -60,8 +60,8 @@ def test_api_realizar_compra_retorna_404_si_usuario_no_existe(client):
 
 @pytest.mark.django_db
 def test_api_realizar_compra_retorna_404_si_tipo_entrada_no_existe(client):
-    usuario_real = Usuario.objects.create(nombre="Prueba", apellido="Test", email="prueba@test.com")
-    FormaPago.objects.create(nombre="TARJETA")
+    usuario_real = Usuario.objects.get_or_create(nombre="Prueba", apellido="Test", email="prueba@test.com")[0]
+    FormaPago.objects.get_or_create(nombre="TARJETA")[0]
     
     payload = {
         "usuario": {"id": usuario_real.id, "nombre": usuario_real.nombre},
