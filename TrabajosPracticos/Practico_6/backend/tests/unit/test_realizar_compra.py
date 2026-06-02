@@ -65,6 +65,16 @@ def test_validar_edades_rechaza_edades_mayores_a_99():
     with pytest.raises(ValueError, match="La edad del visitante debe estar entre 0 y 99 años"):
         validar_edades_visitantes(entradas_invalidas)
 
+def test_validar_fecha_rechaza_dias_festivos_navidad_y_ano_nuevo():
+    navidad = date(2026, 12, 25)
+    ano_nuevo = date(2027, 1, 1)
+
+    with pytest.raises(ValueError, match="El parque está cerrado los días festivos"):
+        validar_fecha_visita(navidad)
+
+    with pytest.raises(ValueError, match="El parque está cerrado los días festivos"):
+        validar_fecha_visita(ano_nuevo)
+
 
 # --- TEST DEL CAMINO FELIZ (CON LOOP Y RELACIÓN 1 a N) ---
 @pytest.mark.django_db
@@ -160,3 +170,4 @@ def test_procesar_compra_recalcula_precios_e_ignora_frontend(fecha_futura):
     assert entradas_guardadas[1].precio_unitario == 5000.0
     assert entradas_guardadas[2].precio_unitario == 20000.0
     assert entradas_guardadas[3].precio_unitario == 5000.0
+
