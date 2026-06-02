@@ -1,0 +1,32 @@
+<!-- Header   -->
+<header class="header">
+    <h1>
+        <img src="/logoEcoHarmony.png" alt="EcoHarmony Park" style="height: 80px; width: auto;">
+    </h1>
+    <nav>
+        <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <img src="house.png" alt="Inicio" style="width: 24px; height: 24px;"> Inicio
+        </a>
+        <a routerLink="/comprar-entrada" routerLinkActive="active">
+            <img src="entrada.png" alt="Comprar Entradas" style="width: 24px; height: 24px;"> Comprar Entradas
+        </a>
+        <a routerLink="/senderos">
+            <img src="shopping.png" alt="Mis compras" style="width: 24px; height: 24px;"> Mis compras
+        </a>
+    </nav>
+    <div class="user-info">
+        <i class="fas fa-circle-user user-icon"></i>
+        <span>{{ mockUser.nombre }} {{ mockUser.apellido }}</span>
+    </div>
+</header>
+
+<!-- Contenido principal -->
+<main class="app-content">
+    <router-outlet></router-outlet>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <p>&copy; 2026 EcoHarmony Park. Todos los derechos reservados.</p>
+    <p> Contacto: info@ecoharmonypark.com</p>
+</footer>
