@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700&display=swap');
+
+$verde-oscuro:  #386641;
+$verde-medio:   #6a994e;
+$verde-lima:    #a7c957;   // ← agregado
+$crema:         #f2e8cf;
+$rojo:          #bc4749;
+
+.mis-compras {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Lato', sans-serif;   // ← fuente aplicada
+
+  h2 {
+    color: $verde-oscuro;
+    font-size: 1.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitulo {
+    color: $verde-medio;
+    margin-bottom: 2rem;
+  }
+
+  .estado {
+    text-align: center;
+    padding: 2rem;
+    color: rgba($verde-oscuro, 0.5);  // ← en lugar de #666
+    font-size: 1rem;
+
+    &.error { color: $rojo; }
+    &.vacio { color: $verde-medio; }
+
+    a {
+      color: $verde-oscuro;
+      font-weight: 600;
+      text-decoration: underline;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+  }
+
+  .lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .compra-card {
+    background: white;
+    border: 1px solid rgba($verde-oscuro, 0.15);  // ← en lugar de #ddd
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba($verde-oscuro, 0.08);
+  }
+
+  .compra-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    .compra-id    { font-weight: 700; color: $verde-oscuro; }
+    .compra-fecha { color: rgba($verde-oscuro, 0.6); font-size: 0.9rem; }  // ← #555
+    .compra-monto { font-weight: 700; color: $verde-medio; font-size: 1.1rem; }
+  }
+
+  .compra-detalle {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: rgba($verde-oscuro, 0.5);  // ← #666
+    margin-bottom: 0.75rem;
+
+    .forma-pago { font-style: italic; }
+  }
+
+  .entradas-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .entrada-chip {
+    background: $crema;
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.82rem;
+    color: $verde-oscuro;
+    font-weight: 500;
+  }
+
+  // ← mp-banner ahora usa paleta propia
+  .mp-banner {
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba($verde-lima, 0.15);
+    border-radius: 8px;
+    border-left: 4px solid $verde-lima;
+
+    a {
+      color: $verde-oscuro;
+      font-weight: 600;
+      text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  @media (max-width: 600px) {
+    .compra-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+  }
+}

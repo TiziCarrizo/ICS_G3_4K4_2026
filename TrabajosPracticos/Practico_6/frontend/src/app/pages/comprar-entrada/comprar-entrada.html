@@ -1,0 +1,149 @@
+<form [formGroup]="form" (ngSubmit)="submitForm()" class="form-card" novalidate>
+    <h1>🎟️Comprar entrada🎟️</h1>
+    @if(submitSuccess) {
+        <div class="alert success" role="status">{{ submitSuccess }}</div>
+    }
+    @if(submitError) {
+        <div class="alert error" role="alert">{{ submitError }}</div>
+    }
+    @if(showValidationErrors && form.invalid) {
+        <div class="alert error" role="alert">
+            <strong>Revisa los datos:</strong>
+            <ul>
+                @for (mensaje of getValidationErrors(); track $index) {
+                    <li>{{ mensaje }}</li>
+                }
+            </ul>
+        </div>
+    }
+    <label> Fecha de visita</label>
+    <input type="date"
+    formControlName="fechaVisita"
+    [min]="hoyISO">
+    <small class="error" aria-live="polite">
+        @if(control('fechaVisita')?.touched) {
+            @if(hasError('fechaVisita', 'required')) {
+            <span>La fecha de visita es obligatoria.</span>
+            } @else if (hasError('fechaVisita', 'fechaPasada')){
+            <span>La fecha de visita no puede ser en el pasado.</span>
+            } @else if (hasError('fechaVisita', 'parqueCerrado')) {
+            <span>El parque esta cerrado ese día.</span>
+            }
+        }
+    </small>
+
+    <!-- Cantidad de entradas -->
+    <div class="form-group" [ngClass]="{'invalid': isInvalid('cantidadEntradas')}">
+        <label>Cantidad de entradas</label>
+        <input type="number" formControlName="cantidadEntradas" intRange [rangeMin]="0" [rangeMax]="10" inputmode="numeric"
+            autocomplete="off" (input)="$event.preventDefault(); actualizarVisitantes()" />
+        @if(isInvalid('cantidadEntradas')){
+        <small class="error" aria-live="polite">
+            @if(hasError('cantidadEntradas','required')) {
+            La cantidad es obligatoria.
+            }
+            @else if (hasError('cantidadEntradas','pattern')) {
+            Debe ser un número entero.
+            }
+            @else if (hasError('cantidadEntradas','min') || hasError('cantidadEntradas','max')) {
+            Debe estar entre 1 y 10.
+            }
+        </small>
+        }
+    </div>
+
+    <!-- Visitantes: edad + tipo de pase -->
+    <div formArrayName="visitantes" class="form-group edades-group"
+        [ngClass]="{'invalid': form.get('visitantes')?.invalid && (form.get('visitantes')?.touched || form.get('visitantes')?.dirty)}">
+        <label>Datos de los visitantes</label>
+
+        @for (visitanteCtrl of visitantes.controls; track $index; let i = $index) {
+        <div [formGroupName]="i" class="visitante-card">
+            <div class="visitante-title">Visitante {{ i + 1 }}</div>
+            <div class="visitante-item">
+                <div class="edad-item" [ngClass]="{'invalid': edadInvalid(i)}">
+                    <label class="field-label">Edad</label>
+                    <input formControlName="edad" type="number" placeholder="Ej: 25" intRange [rangeMin]="0" [rangeMax]="99"
+                        min="0" max="99" step="1" inputmode="numeric" autocomplete="off" enterkeyhint="done" />
+                </div>
+
+                <!-- Tipo de pase -->
+                <div class="select-wrapper pase-item" [ngClass]="{'invalid': paseInvalid(i)}">
+                    <label class="field-label">Tipo de pase</label>
+                    <select formControlName="tipoPase">
+                        <option value="">Selecciona un pase</option>
+                        @for (tp of tiposPase; track tp.id) {
+                        <option [value]="tp.id">{{ tp.nombre }}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="error-visitante">
+            @if(edadInvalid(i)) {
+            <small class="error" aria-live="polite">
+                @if(edadHasError(i,'required')) {
+                La edad es obligatoria.
+                }
+                @else if(edadHasError(i,'pattern')) {
+                Usá solo números enteros.
+                }
+                @else if(edadHasError(i,'min')) {
+                La edad mínima es 0.
+                }
+                @else if(edadHasError(i,'max')) {
+                La edad máxima es 99.
+                }
+            </small>
+            }
+            @else if(paseInvalid(i)) {
+            <small class="error">Seleccioná un tipo de pase.</small>
+            }
+        </div>
+        }
+
+        @if(form.get('visitantes')?.errors?.['visitantesNoCoinciden']) {
+        <small class="error" aria-live="polite">
+            La cantidad de visitantes debe coincidir con la cantidad de entradas.
+        </small>
+        }
+    </div>
+
+    <!-- Forma de pago -->
+    <div class="form-group" [ngClass]="{'invalid': isInvalid('formaPago')}">
+        <label>Forma de pago</label>
+        <div class="select-wrapper">
+            <select formControlName="formaPago">
+                <option value="">Seleccione</option>
+                @for (fp of formasPago; track fp.id) {
+                <option [value]="fp.id">{{ fp.nombre }}</option>
+                }
+            </select>
+        </div>
+        @if(isInvalid('formaPago')) {
+        <small class="error">Seleccioná la forma de pago.</small>
+        }
+    </div>
+
+
+    <button type="submit" class ="submit-btn" [disabled]="isSubmitting">
+        Comprar
+    </button>   
+</form>
+
+@if (showModal) {
+<div class="modal-backdrop">
+    <div class="modal">
+        <h2 class="modal-title">✅ Compra confirmada</h2>
+        <p><strong>Cantidad de entradas:</strong> {{ modalData.cantidad }}</p>
+        <p><strong>Fecha de visita:</strong> {{ modalData.fecha }}</p>
+        <p><strong>Monto total:</strong> ARS{{ modalData.total }}</p>
+        <p class="modal-mail">
+            Se ha enviado un mail de confirmación a <strong>{{ mockUser.email }}</strong>.
+        </p>
+        <div class="modal-actions">
+            <button (click)="cerrarModal()">Seguir comprando</button>
+        </div>
+    </div>
+</div>
+}

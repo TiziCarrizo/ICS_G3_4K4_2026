@@ -1,0 +1,163 @@
+.mp-container {
+  min-height: 100vh;
+  background: #ededed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+
+  @media (max-width: 480px) {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 24px;
+  }
+}
+
+.mp-card {
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.12);
+
+  @media (max-width: 480px) {
+    padding: 20px 16px;
+    border-radius: 8px;
+  }
+}
+
+.mp-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.mp-header h1 {
+  color: #3483fa;
+
+  @media (max-width: 480px) {
+    font-size: 1.4rem;
+  }
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.form-group input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3483fa;
+}
+
+.row {
+  display: flex;
+  gap: 15px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.row .form-group {
+  flex: 1;
+}
+
+.btn-pagar {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: #3483fa;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    padding: 12px;
+  }
+}
+
+.btn-pagar:hover {
+  background: #2968c8;
+}
+
+.btn-pagar:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.mensaje-exito {
+  margin-top: 20px;
+  padding: 24px;
+  background: #f0fff4;
+  border: 1.5px solid #00a650;
+  border-radius: 12px;
+  text-align: center;
+
+  @media (max-width: 480px) {
+    padding: 16px;
+  }
+
+  .exito-icono {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+  }
+
+  .exito-titulo {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #00a650;
+    margin-bottom: 6px;
+
+    @media (max-width: 480px) {
+      font-size: 1.1rem;
+    }
+  }
+
+  .exito-detalle {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .exito-redireccion {
+    font-size: 0.85rem;
+    color: #888;
+    font-style: italic;
+  }
+}
+
+.seguridad {
+  text-align: center;
+  margin-top: 15px;
+  color: #666;
+  font-size: 14px;
+}
