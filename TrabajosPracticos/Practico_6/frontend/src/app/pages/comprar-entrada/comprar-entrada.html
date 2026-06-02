@@ -36,7 +36,8 @@
     <div class="form-group" [ngClass]="{'invalid': isInvalid('cantidadEntradas')}">
         <label>Cantidad de entradas</label>
         <input type="number" formControlName="cantidadEntradas" intRange [rangeMin]="0" [rangeMax]="10" inputmode="numeric"
-            autocomplete="off" (input)="$event.preventDefault(); actualizarVisitantes()" />
+            autocomplete="off" placeholder="Ingresé un número"
+            (input)="$event.preventDefault(); actualizarVisitantes()" />
         @if(isInvalid('cantidadEntradas')){
         <small class="error" aria-live="polite">
             @if(hasError('cantidadEntradas','required')) {
