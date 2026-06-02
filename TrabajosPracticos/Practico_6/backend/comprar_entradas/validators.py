@@ -19,6 +19,8 @@ def validar_forma_pago(forma_pago):
         raise ValueError("Forma de pago no válida")
 
 def validar_cantidad_entradas(entradas):
+    if isinstance(entradas, (int, float)) and entradas < 0:
+        raise ValueError("La cantidad de entradas no puede ser negativa")
 
     if not isinstance(entradas, list):
         raise ValueError("El campo entradas debe ser una lista válida")
