@@ -79,3 +79,39 @@ def test_procesar_compra_exitosa_guarda_con_esquema_completo(fecha_futura):
     assert compra_procesada.cantidad_entradas == 2
     assert compra_procesada.monto_total == 7500.0 
     assert compra_procesada.usuario == usuario_real
+
+    # --- TESTS DE MERCADO PAGO ---
+
+@pytest.mark.django_db
+def test_procesar_compra_con_tarjeta_genera_url_mercado_pago(fecha_futura):
+    usuario = Usuario.objects.create(nombre="Ana", apellido="P", email="ana@test.com")
+    FormaPago.objects.create(nombre="TARJETA")
+    TipoEntrada.objects.create(nombre="REGULAR")
+
+    datos = {
+        "usuario": {"id": usuario.id},
+        "fecha": fecha_futura,
+        "forma_pago": "TARJETA",
+        "entradas": [{"edad": 25, "tipo_pase": "REGULAR", "precio_unitario": 10000.0}]
+    }
+    compra = procesar_compra(datos)
+
+    assert compra.mercado_pago_redirect_url is not None
+    assert str(compra.id) in compra.mercado_pago_redirect_url
+
+
+@pytest.mark.django_db
+def test_procesar_compra_con_efectivo_no_tiene_url_mercado_pago(fecha_futura):
+    usuario = Usuario.objects.create(nombre="Luis", apellido="Q", email="luis@test.com")
+    FormaPago.objects.create(nombre="EFECTIVO")
+    TipoEntrada.objects.create(nombre="REGULAR")
+
+    datos = {
+        "usuario": {"id": usuario.id},
+        "fecha": fecha_futura,
+        "forma_pago": "EFECTIVO",
+        "entradas": [{"edad": 30, "tipo_pase": "REGULAR", "precio_unitario": 10000.0}]
+    }
+    compra = procesar_compra(datos)
+
+    assert compra.mercado_pago_redirect_url is None
