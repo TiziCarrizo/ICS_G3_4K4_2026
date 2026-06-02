@@ -80,7 +80,7 @@ def test_procesar_compra_exitosa_guarda_con_esquema_completo(fecha_futura):
     assert compra_procesada.monto_total == 7500.0 
     assert compra_procesada.usuario == usuario_real
 
-    # --- TESTS DE MERCADO PAGO ---
+# --- TESTS DE MERCADO PAGO ---
 
 @pytest.mark.django_db
 def test_procesar_compra_con_tarjeta_genera_url_mercado_pago(fecha_futura):
