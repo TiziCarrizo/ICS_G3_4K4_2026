@@ -130,3 +130,33 @@ def test_procesar_compra_con_efectivo_no_tiene_url_mercado_pago(fecha_futura):
     compra = procesar_compra(datos)
 
     assert compra.mercado_pago_redirect_url is None
+
+@pytest.mark.django_db
+def test_procesar_compra_recalcula_precios_e_ignora_frontend(fecha_futura):
+    usuario = Usuario.objects.create(nombre="Hack", apellido="Er", email="hack@test.com")
+    FormaPago.objects.create(nombre="TARJETA")
+    TipoEntrada.objects.create(nombre="VIP")
+    TipoEntrada.objects.create(nombre="REGULAR")
+
+    # Payload malicioso: manda precios en 0 o inventados
+    datos_compra = {
+        "usuario": {"id": usuario.id},
+        "fecha": fecha_futura,
+        "forma_pago": "TARJETA",
+        "entradas": [
+            {"edad": 2, "tipo_pase": "VIP", "precio_unitario": 999.0},     # Debería ser 0 (<=3 años)
+            {"edad": 10, "tipo_pase": "REGULAR", "precio_unitario": 0.0},  # Debería ser 5000 (10000 * 0.5)
+            {"edad": 30, "tipo_pase": "VIP", "precio_unitario": 1.0},      # Debería ser 20000
+            {"edad": 65, "tipo_pase": "REGULAR", "precio_unitario": 0.0}   # Debería ser 5000 (10000 * 0.5)
+        ]
+    }
+    
+    compra = procesar_compra(datos_compra)
+    
+    assert compra.monto_total == 30000.0
+    
+    entradas_guardadas = compra.entradas.order_by('id')
+    assert entradas_guardadas[0].precio_unitario == 0.0
+    assert entradas_guardadas[1].precio_unitario == 5000.0
+    assert entradas_guardadas[2].precio_unitario == 20000.0
+    assert entradas_guardadas[3].precio_unitario == 5000.0
