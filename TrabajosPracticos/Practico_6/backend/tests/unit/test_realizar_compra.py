@@ -6,10 +6,10 @@ try:
         validar_usuario_registrado, validar_cantidad_entradas,
         validar_fecha_visita, validar_forma_pago, procesar_compra
     )
-
+  
     from comprar_entradas.validators import (
         validar_usuario_registrado, validar_cantidad_entradas,
-        validar_fecha_visita, validar_forma_pago, 
+        validar_fecha_visita, validar_forma_pago, validar_edades_visitantes
     )
 
     from comprar_entradas.models import Compra, Entrada, Usuario, FormaPago, TipoEntrada
@@ -54,6 +54,16 @@ def test_validar_forma_pago_rechaza_opcion_invalida():
     pago_invalido = "TRANSFERENCIA"
     with pytest.raises(ValueError, match="Forma de pago no válida"):
         validar_forma_pago(pago_invalido)
+
+def test_validar_edades_rechaza_edades_negativas():
+    entradas_invalidas = [{"edad": -1, "tipo_pase": "REGULAR"}]
+    with pytest.raises(ValueError, match="La edad del visitante debe estar entre 0 y 99 años"):
+        validar_edades_visitantes(entradas_invalidas)
+
+def test_validar_edades_rechaza_edades_mayores_a_99():
+    entradas_invalidas = [{"edad": 100, "tipo_pase": "VIP"}]
+    with pytest.raises(ValueError, match="La edad del visitante debe estar entre 0 y 99 años"):
+        validar_edades_visitantes(entradas_invalidas)
 
 
 # --- TEST DEL CAMINO FELIZ (CON LOOP Y RELACIÓN 1 a N) ---
