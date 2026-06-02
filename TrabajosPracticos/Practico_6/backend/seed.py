@@ -11,7 +11,7 @@ TipoEntrada.objects.get_or_create(nombre="VIP")
 TipoEntrada.objects.get_or_create(nombre="REGULAR")
 
 u1, _ = Usuario.objects.get_or_create(
-    email="chaito109@yahoo.com.ar",
+    email="manuelandresdavila642@gmail.com",
     defaults={"nombre": "Manuel", "apellido": "Dávila"}
 )
 u2, _ = Usuario.objects.get_or_create(

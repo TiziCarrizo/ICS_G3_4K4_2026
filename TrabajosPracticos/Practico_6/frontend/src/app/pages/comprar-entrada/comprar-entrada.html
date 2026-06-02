@@ -21,12 +21,14 @@
     formControlName="fechaVisita"
     [min]="hoyISO">
     <small class="error" aria-live="polite">
-        @if(hasError('fechaVisita', 'required')) {
+        @if(control('fechaVisita')?.touched) {
+            @if(hasError('fechaVisita', 'required')) {
             <span>La fecha de visita es obligatoria.</span>
-        } @else if (hasError('fechaVisita', 'fechaPasada')){
+            } @else if (hasError('fechaVisita', 'fechaPasada')){
             <span>La fecha de visita no puede ser en el pasado.</span>
-        } @else if (hasError('fechaVisita', 'parqueCerrado')) {
+            } @else if (hasError('fechaVisita', 'parqueCerrado')) {
             <span>El parque esta cerrado ese día.</span>
+            }
         }
     </small>
 

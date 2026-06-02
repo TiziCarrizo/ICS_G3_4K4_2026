@@ -269,6 +269,7 @@ export class ComprarEntrada {
   }
 
   fechaValida(control: AbstractControl) {
+    if (!control.value) return null; //
     const fechaSeleccionada = new Date(control.value + 'T00:00:00');
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
