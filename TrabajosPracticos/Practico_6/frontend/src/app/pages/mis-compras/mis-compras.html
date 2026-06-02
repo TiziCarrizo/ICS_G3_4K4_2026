@@ -32,9 +32,7 @@
           {{ e.tipo }} | {{ e.edad }} años | ${{ e.precio_unitario | number:'1.0-0' }}
         </span>
       </div>
-      <div *ngIf="compra.mercado_pago_redirect_url" class="mp-banner">
-        <a [href]="compra.mercado_pago_redirect_url" target="_blank">Completar pago en Mercado Pago</a>
-      </div>
+
     </div>
   </div>
 </div>

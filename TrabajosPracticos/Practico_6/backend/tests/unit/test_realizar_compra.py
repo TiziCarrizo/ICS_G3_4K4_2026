@@ -7,6 +7,11 @@ try:
         validar_fecha_visita, validar_forma_pago, procesar_compra
     )
 
+    from comprar_entradas.validators import (
+        validar_usuario_registrado, validar_cantidad_entradas,
+        validar_fecha_visita, validar_forma_pago, 
+    )
+
     from comprar_entradas.models import Compra, Entrada, Usuario, FormaPago, TipoEntrada
 except ImportError:
     import pytest
