@@ -1,3 +1,4 @@
+import threading
 from django.db import transaction
 from django.core.mail import send_mail
 from django.conf import settings
@@ -8,6 +9,20 @@ from .validators import (
 )
 
 MERCADO_PAGO_BASE_URL = "https://www.mercadopago.com.ar/checkout/v1/redirect"
+
+# --- NUEVA FUNCIÓN PARA EL HILO SECUNDARIO ---
+def enviar_correo_en_segundo_plano(asunto, mensaje, origen, destinatarios):
+    try:
+        send_mail(
+            subject=asunto,
+            message=mensaje,
+            from_email=origen,
+            recipient_list=destinatarios,
+            fail_silently=False,
+        )
+    except Exception as e:
+        print(f"[EMAIL ERROR] No se pudo enviar a {destinatarios}: {e}")
+# ---------------------------------------------
 
 def calcular_precio_real(tipo_pase_nombre, edad):
     base = 20000.0 if tipo_pase_nombre == "VIP" else 10000.0
@@ -55,7 +70,7 @@ def procesar_compra(datos):
                 precio_unitario=precio_real
             )
 
-    # 4. Envío de email (fuera de la transacción para no bloquear si falla el mail)
+    # 4. Envío de email (AHORA EN SEGUNDO PLANO)
     email_destino = datos.get("email_confirmacion") or usuario.email
     detalle = "\n".join(
         f"  - Entrada {i+1}: {item['tipo_pase']} | Edad: {item['edad']} años | ${calcular_precio_real(item['tipo_pase'], item['edad']):,.0f}"
@@ -78,15 +93,16 @@ def procesar_compra(datos):
         f"El equipo de EcoHarmony Park"
     )
     
-    try:
-        send_mail(
-            subject=f"Confirmación de compra #{nueva_compra.id} - EcoHarmony Park",
-            message=cuerpo,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[email_destino],
-            fail_silently=False,
+    # Creamos el hilo y lo arrancamos para que el mail se mande "por detrás"
+    hilo_mail = threading.Thread(
+        target=enviar_correo_en_segundo_plano,
+        args=(
+            f"Confirmación de compra #{nueva_compra.id} - EcoHarmony Park", # Asunto
+            cuerpo, # Mensaje
+            settings.EMAIL_HOST_USER, # Origen
+            [email_destino] # Destinatarios
         )
-    except Exception as e:
-        print(f"[EMAIL ERROR] No se pudo enviar a {email_destino}: {e}")
+    )
+    hilo_mail.start()
 
     return nueva_compra
