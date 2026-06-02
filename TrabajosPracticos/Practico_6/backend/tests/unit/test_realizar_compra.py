@@ -1,6 +1,7 @@
 import pytest
 from datetime import date, timedelta
 from comprar_entradas.services import calcular_precio_real
+import json
 
 try:
     from comprar_entradas.services import (
@@ -149,7 +150,6 @@ def test_procesar_compra_recalcula_precios_e_ignora_frontend(fecha_futura):
     TipoEntrada.objects.create(nombre="VIP")
     TipoEntrada.objects.create(nombre="REGULAR")
 
-    # Payload malicioso: manda precios en 0 o inventados
     datos_compra = {
         "usuario": {"id": usuario.id},
         "fecha": fecha_futura,
@@ -201,3 +201,22 @@ def test_procesar_compra_efectivo_no_genera_link_mercado_pago(fecha_futura):
     
     assert compra.forma_pago.nombre == "EFECTIVO"
     assert compra.mercado_pago_redirect_url is None  
+
+@pytest.mark.django_db
+def test_api_realizar_compra_retorna_400_si_falta_dato_clave(client):
+    usuario_real = Usuario.objects.create(nombre="Incompleto", apellido="Test", email="inc@test.com")
+    FormaPago.objects.create(nombre="TARJETA")
+    
+    payload_sin_fecha = {
+        "usuario": {"id": usuario_real.id, "nombre": usuario_real.nombre},
+        "forma_pago": "TARJETA",
+        "entradas": [{"edad": 25, "tipo_pase": "VIP"}]
+    }
+    
+    response = client.post(
+        '/api/compras/', 
+        data=json.dumps(payload_sin_fecha),
+        content_type='application/json'
+    )
+    
+    assert response.status_code == 400 
