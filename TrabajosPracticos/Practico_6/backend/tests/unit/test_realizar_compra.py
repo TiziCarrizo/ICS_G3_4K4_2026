@@ -1,5 +1,6 @@
 import pytest
 from datetime import date, timedelta
+from comprar_entradas.services import calcular_precio_real
 
 try:
     from comprar_entradas.services import (
@@ -171,3 +172,32 @@ def test_procesar_compra_recalcula_precios_e_ignora_frontend(fecha_futura):
     assert entradas_guardadas[2].precio_unitario == 20000.0
     assert entradas_guardadas[3].precio_unitario == 5000.0
 
+def test_calcular_precio_real_valores_limite():
+
+    assert calcular_precio_real("VIP", 3) == 0.0      
+    assert calcular_precio_real("VIP", 4) == 10000.0  
+    
+    assert calcular_precio_real("VIP", 15) == 10000.0 
+    assert calcular_precio_real("VIP", 16) == 20000.0 
+    
+    assert calcular_precio_real("VIP", 59) == 20000.0 
+    assert calcular_precio_real("VIP", 60) == 10000.0 
+
+@pytest.mark.django_db
+def test_procesar_compra_efectivo_no_genera_link_mercado_pago(fecha_futura):
+
+    usuario = Usuario.objects.create(nombre="Efectivo", apellido="Test", email="efectivo@test.com")
+    FormaPago.objects.create(nombre="EFECTIVO")
+    TipoEntrada.objects.create(nombre="REGULAR")
+    
+    datos_compra = {
+        "usuario": {"id": usuario.id, "nombre": usuario.nombre},
+        "fecha": fecha_futura,
+        "forma_pago": "EFECTIVO",
+        "entradas": [{"edad": 30, "tipo_pase": "REGULAR"}]
+    }
+    
+    compra = procesar_compra(datos_compra)
+    
+    assert compra.forma_pago.nombre == "EFECTIVO"
+    assert compra.mercado_pago_redirect_url is None  
