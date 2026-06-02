@@ -80,7 +80,9 @@ form.form-card {
   select {
     width: 100%;
     padding: 10px 12px;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    min-height: 44px;
+    -webkit-text-size-adjust: 100%;
     border: 2px solid $border-gray;
     border-radius: 8px;
     background-color: $light-bg;
@@ -110,7 +112,7 @@ form.form-card {
 
     @media (max-width: 768px) {
       padding: 9px 10px;
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
   }
 
@@ -139,6 +141,37 @@ form.form-card {
       min-height: 20px;
       margin-bottom: 16px;
     }
+  }
+
+  .alert {
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 12px 0 16px 0;
+    font-size: 0.9rem;
+    line-height: 1.35;
+    border: 1px solid transparent;
+    box-shadow: $shadow-sm;
+
+    ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+  }
+
+  .alert.error {
+    background: #f9eee8;
+    border-color: $error-red;
+    color: $error-red;
+  }
+
+  .alert.success {
+    background: #ecf7ef;
+    border-color: $secondary-blue;
+    color: $primary-green;
   }
 
   .field-label {

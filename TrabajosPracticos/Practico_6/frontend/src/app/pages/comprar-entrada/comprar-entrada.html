@@ -6,6 +6,16 @@
     @if(submitError) {
         <div class="alert error" role="alert">{{ submitError }}</div>
     }
+    @if(showValidationErrors && form.invalid) {
+        <div class="alert error" role="alert">
+            <strong>Revisa los datos:</strong>
+            <ul>
+                @for (mensaje of getValidationErrors(); track $index) {
+                    <li>{{ mensaje }}</li>
+                }
+            </ul>
+        </div>
+    }
     <label> Fecha de visita</label>
     <input type="date"
     formControlName="fechaVisita"
@@ -23,8 +33,8 @@
     <!-- Cantidad de entradas -->
     <div class="form-group" [ngClass]="{'invalid': isInvalid('cantidadEntradas')}">
         <label>Cantidad de entradas</label>
-        <input type="number" formControlName="cantidadEntradas" intRange [rangeMin]="1" inputmode="numeric"
-            autocomplete="off" enterkeyhint="done" (change)="actualizarVisitantes()" />
+        <input type="number" formControlName="cantidadEntradas" intRange [rangeMin]="0" [rangeMax]="10" inputmode="numeric"
+            autocomplete="off" enterkeyhint="done" (keydown.enter)="$event.preventDefault(); actualizarVisitantes()" />
         @if(isInvalid('cantidadEntradas')){
         <small class="error" aria-live="polite">
             @if(hasError('cantidadEntradas','required')) {
@@ -114,7 +124,7 @@
     </div>
 
 
-    <button type="submit" class ="submit-btn" [disabled]="form.invalid || isSubmitting">
+    <button type="submit" class ="submit-btn" [disabled]="isSubmitting">
         Comprar
     </button>   
 </form>
