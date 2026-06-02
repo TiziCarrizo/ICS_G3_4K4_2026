@@ -103,20 +103,21 @@ export class ComprarEntrada {
         const formaPagoId = Number(this.form.get('formaPago')?.value);
         const formaPagoNombre = this.getFormaPagoNombre(formaPagoId);
 
-        if (formaPagoNombre === 'TARJETA') {
-            const modalData = {
-                cantidad: this.visitantes.length,
-                fecha: this.form.get('fechaVisita')?.value,
-                total: this.visitantes.controls.reduce((acc, ctrl) => {
-                    const tipoPaseNombre = this.getTipoPaseNombre(Number(ctrl.get('tipoPase')?.value));
-                    const edad = Number(ctrl.get('edad')?.value);
-                    return acc + this.getPrecioUnitario(tipoPaseNombre, edad);
-                }, 0)
-            };
-            this.router.navigate(['/mercado-pago'], { state: { payload, modalData } });
-            this.isSubmitting = false;
-            return;
-        }
+        const modalData = {
+          cantidad: this.visitantes.length,
+          fecha: this.form.get('fechaVisita')?.value,
+          total: this.visitantes.controls.reduce((acc, ctrl) => {
+              const tipoPaseNombre = this.getTipoPaseNombre(Number(ctrl.get('tipoPase')?.value));
+              const edad = Number(ctrl.get('edad')?.value);
+              return acc + this.getPrecioUnitario(tipoPaseNombre, edad);
+          }, 0)
+      };
+
+      if (formaPagoNombre === 'TARJETA' && modalData.total > 0) {
+          this.router.navigate(['/mercado-pago'], { state: { payload, modalData } });
+          this.isSubmitting = false;
+          return;
+      }
 
         try {
             const headers = new HttpHeaders({ 'Content-Type': 'application/json' });

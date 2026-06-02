@@ -11,7 +11,7 @@ interface AppUser {
 export const MOCK_USER: AppUser = {
     nombre: "Manuel",
     apellido: "Dávila",
-    email: "chaito109@yahoo.com.ar",
+    email: "manuelandresdavila642@gmail.com",
     id: 1
 }
 
