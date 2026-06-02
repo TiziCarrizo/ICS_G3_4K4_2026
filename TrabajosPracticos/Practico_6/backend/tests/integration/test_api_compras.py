@@ -3,28 +3,33 @@ import json
 from comprar_entradas.models import Usuario, FormaPago, TipoEntrada
 
 @pytest.mark.django_db
-def test_api_realizar_compra_endpoint_retorna_201(client):
+def test_api_realizar_compra_endpoint_retorna_201_y_link_mp(client):
     # Arrange: Preparamos la base de datos
-    usuario_real = Usuario.objects.create(nombre="Alexis", apellido="G", email="alexis@test.com")
+    usuario_real = Usuario.objects.create(nombre="Alexis", apellido="Felippa", email="alexis@test.com")
     FormaPago.objects.create(nombre="TARJETA")
     TipoEntrada.objects.create(nombre="VIP")
     
-    # Este es el JSON exacto que te va a mandar tu código de frontend
     payload = {
         "usuario": {"id": usuario_real.id, "nombre": usuario_real.nombre},
         "fecha": "2026-06-16",
         "forma_pago": "TARJETA",
         "entradas": [
-            {"edad": 25, "tipo_pase": "VIP", "precio_unitario": 5000.0}
+            {"edad": 25, "tipo_pase": "VIP", "precio_unitario": 20000.0}
         ]
     }
     
+    # Act: Hacemos la petición POST a la API
     response = client.post(
         '/api/compras/', 
         data=json.dumps(payload),
         content_type='application/json'
     )
     
-    # Assert: Esperamos un 201 (Created) y un mensaje de éxito
+    # Assert: Verificamos el status code y la estructura del JSON devuelto
     assert response.status_code == 201
-    assert response.json()["mensaje"] == "Compra procesada exitosamente"
+    
+    data = response.json()
+    assert data["mensaje"] == "Compra procesada exitosamente"
+    
+    assert "mercado_pago_redirect_url" in data
+    assert "mercadopago.com.ar" in data["mercado_pago_redirect_url"]

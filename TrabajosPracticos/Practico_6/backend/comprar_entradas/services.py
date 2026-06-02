@@ -7,6 +7,8 @@ from .validators import (
     validar_fecha_visita, validar_forma_pago
 )
 
+MERCADO_PAGO_BASE_URL = "https://www.mercadopago.com.ar/checkout/v1/redirect"
+
 def procesar_compra(datos):
     # 1. Validaciones de negocio puras
     validar_usuario_registrado(datos.get("usuario"))

@@ -19,7 +19,14 @@ def api_realizar_compra(request):
             datos["fecha"] = datetime.strptime(datos["fecha"], "%Y-%m-%d").date()
         
         compra = procesar_compra(datos)
-        return JsonResponse({"mensaje": "Compra procesada exitosamente"}, status=201)
+        
+        # Armamos la respuesta incluyendo el link de Mercado Pago
+        respuesta = {
+            "mensaje": "Compra procesada exitosamente",
+            "mercado_pago_redirect_url": compra.mercado_pago_redirect_url
+        }
+        
+        return JsonResponse(respuesta, status=201)
         
     except json.JSONDecodeError:
         return JsonResponse({"error": "Formato JSON inválido"}, status=400)
