@@ -1,0 +1,40 @@
+<div class="mis-compras">
+  <h2>Mis compras</h2>
+  <p class="subtitulo">Hola, {{ mockUser.nombre }} {{ mockUser.apellido }}</p>
+
+  <div *ngIf="cargando" class="estado">Cargando...</div>
+
+  <div *ngIf="!cargando && error" class="estado error">
+    {{ error }}
+    <br>
+    <a routerLink="/comprar-entrada">Comprar entradas</a>
+  </div>
+
+  <div *ngIf="!cargando && !error && compras.length === 0" class="estado vacio">
+    Todavía no tenés compras registradas.
+    <br>
+    <a routerLink="/comprar-entrada">¡Comprá tu primera entrada!</a>
+  </div>
+
+  <div *ngIf="!cargando && !error && compras.length > 0" class="lista">
+    <div *ngFor="let compra of compras" class="compra-card">
+      <div class="compra-header">
+        <span class="compra-id">#{{ compra.id }}</span>
+        <span class="compra-fecha">Visita: {{ compra.fecha }}</span>
+        <span class="compra-monto">${{ compra.monto_total | number:'1.0-0' }}</span>
+      </div>
+      <div class="compra-detalle">
+        <span>{{ compra.cantidad_entradas }} entrada(s)</span>
+        <span class="forma-pago">{{ compra.forma_pago === 'TARJETA' ? 'Tarjeta (MP)' : 'Efectivo' }}</span>
+      </div>
+      <div class="entradas-list">
+        <span *ngFor="let e of compra.entradas" class="entrada-chip">
+          {{ e.tipo }} | {{ e.edad }} años | ${{ e.precio_unitario | number:'1.0-0' }}
+        </span>
+      </div>
+      <div *ngIf="compra.mercado_pago_redirect_url" class="mp-banner">
+        <a [href]="compra.mercado_pago_redirect_url" target="_blank">Completar pago en Mercado Pago</a>
+      </div>
+    </div>
+  </div>
+</div>
