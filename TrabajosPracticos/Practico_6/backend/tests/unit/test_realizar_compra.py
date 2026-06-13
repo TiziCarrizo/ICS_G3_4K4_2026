@@ -109,7 +109,7 @@ def test_procesar_compra_exitosa_guarda_con_esquema_completo(fecha_futura):
         "fecha": fecha_futura,
         "forma_pago": "TARJETA",
         "entradas": [
-            {"edad": 25, "tipo_pase": "VIP"},    
+            {"edad": -2, "tipo_pase": "VIP"},    
             {"edad": 12, "tipo_pase": "REGULAR"}   
         ]
     }

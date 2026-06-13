@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .services import procesar_compra
 from .models import Usuario, Compra
 
+
 @csrf_exempt
 def api_realizar_compra(request):
     if request.method != 'POST':

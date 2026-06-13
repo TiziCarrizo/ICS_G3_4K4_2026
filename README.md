@@ -45,7 +45,11 @@ A continuación se describe la estructura de directorios del repositorio:
 
 ```
 ICS_G3_4K4_2026/
-├── Parciales/
+├── HerramientasCursado/
+│   ├── Cronograma
+│   ├── Material de Apoyo
+│   └── Programa
+│──Parciales/
 │   └── Parcial_<N>/
 │       ├── Ejercicios/
 │       ├── Elementos de clase/
@@ -56,12 +60,8 @@ ICS_G3_4K4_2026/
 │   └── Practico_<N>/
 │       └── Artefactos/
 └── Bibliografia/
-    ├── Ignenieria de Software/
-    ├── SCM
-    ├── Testing de software
-    ├── TDD
-    ├── Agilismo
-    ├── Lean y Kanban
+│   ├── LibrosCatedra/
+│   └── LibrosAdicionales/
 ```
 
 > [!NOTE]
@@ -71,6 +71,14 @@ ICS_G3_4K4_2026/
 ---
 
 ## Convenciones de Nombrado
+
+| Ítem | Formato del Nombre | Ubicación |
+|---|---|---|
+| Cronograma de clases | `HC_CRON_<Año>_<Materia>_v<N>.pdf` | `HerramientasCursado/Cronograma` |
+| Programa | `HC_PROG_<Año>_<Materia>_v<N>.pdf` | `HerramientasCursado/programa` |
+| Material de Apoyo | `HC_APO<N>_<Nombre>.pdf` | `HerramientasCursado/Material de Apoyo` |
+
+### Herramientas de Cursado
 
 ### Ítems de Parciales
 
@@ -100,7 +108,7 @@ ICS_G3_4K4_2026/
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Material Bibliográfico | `BIB<N>_<Nombre>.<formato>` | `Bibliografia/` |
+| Material Bibliográfico | `BIB<N>_<Tema>_<Nombre>.<formato>` | `Bibliografia/LibrosCatedra/ o Bibliografia/LibrosAdicionales/` |
 
 ---
 
