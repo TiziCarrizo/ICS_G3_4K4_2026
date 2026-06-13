@@ -45,7 +45,11 @@ A continuación se describe la estructura de directorios del repositorio:
 
 ```
 ICS_G3_4K4_2026/
-├── Parciales/
+├── HerramientasCursado/
+│   ├── Cronograma
+│   ├── Material de Apoyo
+│   └── Programa
+│──Parciales/
 │   └── Parcial_<N>/
 │       ├── Ejercicios/
 │       ├── Elementos de clase/
@@ -71,6 +75,14 @@ ICS_G3_4K4_2026/
 ---
 
 ## Convenciones de Nombrado
+
+| Ítem | Formato del Nombre | Ubicación |
+|---|---|---|
+| Cronograma de clases | `HC_CRON_<Año>_<Materia>_v<N>.pdf` | `HerramientasCursado/Cronograma` |
+| Programa | `HC_PROG_<Año>_<Materia>_v<N>.pdf` | `HerramientasCursado/programa` |
+| Material de Apoyo | `HC_APO<N>_<Nombre>.pdf` | `HerramientasCursado/Material de Apoyo` |
+
+### Herramientas de Cursado
 
 ### Ítems de Parciales
 
