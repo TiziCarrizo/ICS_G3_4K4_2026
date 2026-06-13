@@ -85,7 +85,7 @@ ICS_G3_4K4_2026/
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Template de Parcial | `P<N>_TEMPLATE_<Nombre>.pdf` | `Parciales/Parcial_<N>/` |
+| Template de Parcial | `P<N>_TEMPLATE<N>_<Nombre>.pdf` | `Parciales/Parcial_<N>/` |
 | Ejercicio Resuelto | `P<N>_EJ<N>_<Nombre>.<ext>` | `Parciales/Parcial_<N>/Ejercicios/` |
 | Parcial de Año Anterior | `P<N>_<Año>_<Tema>.pdf` | `Parciales/Parcial_<N>/Parciales Viejos/` |
 | Resumen de Parcial | `P<N>_RES<N>_<Autor>.pdf` | `Parciales/Parcial_<N>/Resúmenes/` |
