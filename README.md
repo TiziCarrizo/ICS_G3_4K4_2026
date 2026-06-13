@@ -48,7 +48,7 @@ ICS_G3_4K4_2026/
 ├── Bibliografia/
 │   ├── Libros Catedra/
 │   └── Libros Adicionales/
-├── HerramientasCursado/
+├── Herramientas Cursado/
 │   ├── Cronograma
 │   ├── Material de Apoyo
 │   └── Informacion Catedra
@@ -59,7 +59,7 @@ ICS_G3_4K4_2026/
 │       │   └── Clase_<N>_<FECHA>/
 │       ├── Parciales Viejos/
 │       └── Resúmenes/
-└── TrabajosPracticos/
+└── Trabajos Practicos/
     └── Practico_<N>/
         └── Artefactos/
 
@@ -75,9 +75,9 @@ ICS_G3_4K4_2026/
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Cronograma de clases | `HC_CRON_<Año>_<Materia>_v<N>.pdf` | `HerramientasCursado/Cronograma` |
-| Programa | `HC_PROG_<Año>_<Materia>_v<N>.pdf` | `HerramientasCursado/Informacion Catedra` |
-| Material de Apoyo | `HC_APO<N>_<Nombre>.pdf` | `HerramientasCursado/Material de Apoyo` |
+| Cronograma de clases | `HC_CRON_<Año>_<Materia>_v<N>.pdf` | `Herramientas Cursado/Cronograma` |
+| Programa | `HC_PROG_<Año>_<Materia>_v<N>.pdf` | `Herramientas Cursado/Informacion Catedra` |
+| Material de Apoyo | `HC_APO<N>_<Nombre>.pdf` | `Herramientas Cursado/Material de Apoyo` |
 
 ### Herramientas de Cursado
 
@@ -85,7 +85,7 @@ ICS_G3_4K4_2026/
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Template de Parcial | `P<N>_TEMPLATE_<Nombre>.pdf` | `Parciales/Parcial_<N>/` |
+| Template de Parcial | `P<N>_TEMPLATE_<Nombre>.<ext>` | `Parciales/Parcial_<N>/` |
 | Ejercicio Resuelto | `P<N>_EJ<N>_<Nombre>.<ext>` | `Parciales/Parcial_<N>/Ejercicios/` |
 | Parcial de Año Anterior | `P<N>_<Año>_<Tema>.pdf` | `Parciales/Parcial_<N>/Parciales Viejos/` |
 | Resumen de Parcial | `P<N>_RES<N>_<Autor>.pdf` | `Parciales/Parcial_<N>/Resúmenes/` |
@@ -101,9 +101,9 @@ ICS_G3_4K4_2026/
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Enunciado del TP | `TP<N>_ENUNCIADO_<Titulo>.pdf` | `TrabajosPracticos/Practico_<N>/` |
-| Artefacto del TP | `TP<N>_ART<N>_<Nombre>.<ext>` | `TrabajosPracticos/Practico_<N>/Artefactos/` |
-| Resolución del TP | `TP<N>_RESOLUCION_ITEM<N>.<ext>` | `TrabajosPracticos/Practico_<N>/` |
+| Enunciado del TP | `TP<N>_ENUNCIADO_<Titulo>.pdf` | `Trabajos Practicos/Practico_<N>/` |
+| Artefacto del TP | `TP<N>_ART<N>_<Nombre>.<ext>` | `Trabajos Practicos/Practico_<N>/Artefactos/` |
+| Resolución del TP | `TP<N>_RESOLUCION_ITEM<N>.<ext>` | `Trabajos Practicos/Practico_<N>/` |
 
 ### Bibliografía
 
