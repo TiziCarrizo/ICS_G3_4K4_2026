@@ -76,7 +76,7 @@ ICS_G3_4K4_2026/
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
 | Cronograma de clases | `HC_CRON_<Año>_<Materia>_v<N>.pdf` | `HerramientasCursado/Cronograma` |
-| Programa | `HC_PROG_<Año>_<Materia>_v<N>.pdf` | `HerramientasCursado/programa` |
+| Programa | `HC_PROG_<Año>_<Materia>_v<N>.pdf` | `HerramientasCursado/Informacion Catedra` |
 | Material de Apoyo | `HC_APO<N>_<Nombre>.pdf` | `HerramientasCursado/Material de Apoyo` |
 
 ### Herramientas de Cursado
@@ -109,7 +109,7 @@ ICS_G3_4K4_2026/
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Material Bibliográfico | `BIB<N>_<Tema>_<Nombre>.<formato>` | `Bibliografia/LibrosCatedra/ o Bibliografia/LibrosAdicionales/` |
+| Material Bibliográfico | `BIB<N>_<Tema>_<Nombre>.<formato>` | `Bibliografia/Libros Catedra/ o Bibliografia/Libros Adicionales/` |
 
 ---
 
