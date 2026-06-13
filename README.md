@@ -45,10 +45,13 @@ A continuación se describe la estructura de directorios del repositorio:
 
 ```
 ICS_G3_4K4_2026/
+├── Bibliografia/
+│   ├── Libros Catedra/
+│   └── Libros Adicionales/
 ├── HerramientasCursado/
 │   ├── Cronograma
 │   ├── Material de Apoyo
-│   └── Programa
+│   └── Informacion Catedra
 │──Parciales/
 │   └── Parcial_<N>/
 │       ├── Ejercicios/
@@ -56,12 +59,10 @@ ICS_G3_4K4_2026/
 │       │   └── Clase_<N>_<FECHA>/
 │       ├── Parciales Viejos/
 │       └── Resúmenes/
-├── TrabajosPracticos/
-│   └── Practico_<N>/
-│       └── Artefactos/
-└── Bibliografia/
-│   ├── LibrosCatedra/
-│   └── LibrosAdicionales/
+└── TrabajosPracticos/
+    └── Practico_<N>/
+        └── Artefactos/
+
 ```
 
 > [!NOTE]
