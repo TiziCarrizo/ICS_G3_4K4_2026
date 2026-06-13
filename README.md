@@ -60,9 +60,10 @@ ICS_G3_4K4_2026/
 │       ├── Parciales Viejos/
 │       └── Resúmenes/
 └── Trabajos Practicos/
-    └── Practico_<N>/
-        └── Artefactos/
-
+    ├── Practico_<N>/
+    │    └── Artefactos/
+    └── Trabajo Investigacion_<N>/    
+         └── Artefactos/
 ```
 
 > [!NOTE]
@@ -104,6 +105,9 @@ ICS_G3_4K4_2026/
 | Enunciado del TP | `TP<N>_ENUNCIADO_<Titulo>.pdf` | `Trabajos Practicos/Practico_<N>/` |
 | Artefacto del TP | `TP<N>_ART<N>_<Nombre>.<ext>` | `Trabajos Practicos/Practico_<N>/Artefactos/` |
 | Resolución del TP | `TP<N>_RESOLUCION_ITEM<N>.<ext>` | `Trabajos Practicos/Practico_<N>/` |
+| Enunciado del TI | `TI<N>_ENUNCIADO_<Titulo>.pdf` | `Trabajos Practicos/Trabajo investigación_<N>/` |
+| Artefacto del TI | `TI<N>_ART<N>_<Nombre>.<ext>` | `Trabajos Practicos/Trabajo investigación_<N>/Artefactos/` |
+| Resolución del TI | `TI<N>_RESOLUCION_ITEM<N>.<ext>` | `Trabajos Practicos/Trabajo investigación_<N>/` |
 
 ### Bibliografía
 
