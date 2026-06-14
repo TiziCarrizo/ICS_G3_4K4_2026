@@ -74,8 +74,8 @@ ICS_G3_4K4_2026/
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Cronograma de clases | `HC_CRON_<Año>_<Materia>_v<N>.pdf` | `Herramientas_Cursado/Cronograma/` |
-| Programa | `HC_PROG_<Año>_<Materia>_v<N>.pdf` | `Herramientas_Cursado/Informacion_Catedra/` |
+| Cronograma de clases | `HC_CRON_<Año>_v<N>.pdf` | `Herramientas_Cursado/Cronograma/` |
+| Programa | `HC_PROG_<Año>_v<N>.pdf` | `Herramientas_Cursado/Informacion_Catedra/` |
 | Material de Apoyo | `HC_APO<N>_<Nombre>.pdf` | `Herramientas_Cursado/Material_de_Apoyo/` |
 
 ### Ítems de Parciales
