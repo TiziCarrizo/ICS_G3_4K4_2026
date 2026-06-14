@@ -1,6 +1,6 @@
 # Gestión de Configuración del Software — ICS G3 4K4 2026
 
-> **Versión:** 1.0.3 | **Fecha:** 24/03/2026 | **Fecha última modificación:** 07/04/2026  
+> **Versión:** 1.0.4 | **Fecha:** 24/03/2026 | **Fecha última modificación:** 13/06/2026  
 > **Materia:** Ingeniería y Calidad de Software  
 > **Repositorio:**
 
@@ -20,7 +20,6 @@
 | Tavella Valentino | 78973 |
 | Linares Julián | 97088 |
 | Sacco Juan | 89319 |
-
 
 ## Introducción
 
@@ -43,26 +42,25 @@ El presente plan cubre los siguientes elementos:
 
 A continuación se describe la estructura de directorios del repositorio:
 
-```
+```text
 ICS_G3_4K4_2026/
 ├── Bibliografia/
-│   ├── Libros Catedra/
-│   └── Libros Adicionales/
-├── Herramientas Cursado/
-│   ├── Cronograma
-│   ├── Material de Apoyo
-│   └── Informacion Catedra
-│──Parciales/
+│   ├── Libros_Catedra/
+│   └── Libros_Adicionales/
+├── Herramientas_Cursado/
+│   ├── Cronograma/
+│   ├── Informacion_Catedra/
+│   └── Material_de_Apoyo/
+│── Parciales/
 │   └── Parcial_<N>/
 │       ├── Ejercicios/
-│       ├── Elementos de clase/
+│       ├── Elementos_de_Clase/
 │       │   └── Clase_<N>_<FECHA>/
-│       ├── Parciales Viejos/
-│       └── Resúmenes/
-└── Trabajos Practicos/
+│       └── Resumenes/
+└── Trabajos_Practicos/
     ├── Practico_<N>/
     │    └── Artefactos/
-    └── Trabajo Investigacion_<N>/    
+    └── Trabajo_Investigacion_<N>/    
          └── Artefactos/
 ```
 
@@ -76,11 +74,9 @@ ICS_G3_4K4_2026/
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Cronograma de clases | `HC_CRON_<Año>_<Materia>_v<N>.pdf` | `Herramientas Cursado/Cronograma` |
-| Programa | `HC_PROG_<Año>_<Materia>_v<N>.pdf` | `Herramientas Cursado/Informacion Catedra` |
-| Material de Apoyo | `HC_APO<N>_<Nombre>.pdf` | `Herramientas Cursado/Material de Apoyo` |
-
-### Herramientas de Cursado
+| Cronograma de clases | `HC_CRON_<Año>_<Materia>_v<N>.pdf` | `Herramientas_Cursado/Cronograma/` |
+| Programa | `HC_PROG_<Año>_<Materia>_v<N>.pdf` | `Herramientas_Cursado/Informacion_Catedra/` |
+| Material de Apoyo | `HC_APO<N>_<Nombre>.pdf` | `Herramientas_Cursado/Material_de_Apoyo/` |
 
 ### Ítems de Parciales
 
@@ -88,32 +84,31 @@ ICS_G3_4K4_2026/
 |---|---|---|
 | Template de Parcial | `P<N>_TEMPLATE_<Nombre>.<ext>` | `Parciales/Parcial_<N>/` |
 | Ejercicio Resuelto | `P<N>_EJ<N>_<Nombre>.<ext>` | `Parciales/Parcial_<N>/Ejercicios/` |
-| Parcial de Año Anterior | `P<N>_<Año>_<Tema>.pdf` | `Parciales/Parcial_<N>/Parciales Viejos/` |
-| Resumen de Parcial | `P<N>_RES<N>_<Autor>.pdf` | `Parciales/Parcial_<N>/Resúmenes/` |
+| Resumen de Parcial | `P<N>_RES<N>_<Autor>.pdf` | `Parciales/Parcial_<N>/Resumenes/` |
 
 ### Elementos de Clase
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Presentación de Clase | `P<N>_C<N>_PRES_<Titulo>.ppt` | `Parciales/Parcial_<N>/Elementos de clase/Clase_<N>_<FECHA>/` |
-| Nota de Clase | `P<N>_C<N>_NOTA_<Titulo>.<formato>` | `Parciales/Parcial_<N>/Elementos de clase/Clase_<N>_<FECHA>/` |
+| Presentación de Clase | `P<N>_C<N>_PRES_<Titulo>.ppt` | `Parciales/Parcial_<N>/Elementos_de_Clase/Clase_<N>_<FECHA>/` |
+| Nota de Clase | `P<N>_C<N>_NOTA_<Titulo>.<formato>` | `Parciales/Parcial_<N>/Elementos_de_Clase/Clase_<N>_<FECHA>/` |
 
 ### Trabajos Prácticos
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Enunciado del TP | `TP<N>_ENUNCIADO_<Titulo>.pdf` | `Trabajos Practicos/Practico_<N>/` |
-| Artefacto del TP | `TP<N>_ART<N>_<Nombre>.<ext>` | `Trabajos Practicos/Practico_<N>/Artefactos/` |
-| Resolución del TP | `TP<N>_RESOLUCION_ITEM<N>.<ext>` | `Trabajos Practicos/Practico_<N>/` |
-| Enunciado del TI | `TI<N>_ENUNCIADO_<Titulo>.pdf` | `Trabajos Practicos/Trabajo investigación_<N>/` |
-| Artefacto del TI | `TI<N>_ART<N>_<Nombre>.<ext>` | `Trabajos Practicos/Trabajo investigación_<N>/Artefactos/` |
-| Resolución del TI | `TI<N>_RESOLUCION_ITEM<N>.<ext>` | `Trabajos Practicos/Trabajo investigación_<N>/` |
+| Enunciado del TP | `TP<N>_ENUNCIADO_<Titulo>.pdf` | `Trabajos_Practicos/Practico_<N>/` |
+| Artefacto del TP | `TP<N>_ART<N>_<Nombre>.<ext>` | `Trabajos_Practicos/Practico_<N>/Artefactos/` |
+| Resolución del TP | `TP<N>_RESOLUCION_ITEM<N>.<ext>` | `Trabajos_Practicos/Practico_<N>/` |
+| Enunciado del TI | `TI<N>_ENUNCIADO_<Titulo>.pdf` | `Trabajos_Practicos/Trabajo_Investigacion_<N>/` |
+| Artefacto del TI | `TI<N>_ART<N>_<Nombre>.<ext>` | `Trabajos_Practicos/Trabajo_Investigacion_<N>/Artefactos/` |
+| Resolución del TI | `TI<N>_RESOLUCION_ITEM<N>.<ext>` | `Trabajos_Practicos/Trabajo_Investigacion_<N>/` |
 
 ### Bibliografía
 
 | Ítem | Formato del Nombre | Ubicación |
 |---|---|---|
-| Material Bibliográfico | `BIB<N>_<Tema>_<Nombre>.<formato>` | `Bibliografia/Libros Catedra/ o Bibliografia/Libros Adicionales/` |
+| Material Bibliográfico | `BIB<N>_<Tema>_<Nombre>.<formato>` | `Bibliografia/Libros_Catedra/` o `Bibliografia/Libros_Adicionales/` |
 
 ---
 
@@ -122,7 +117,6 @@ ICS_G3_4K4_2026/
 Para mantener trazabilidad del autor y consistencia entre aportes, los mensajes de commit deben respetar el siguiente formato:
 
 `<Legajo>: <descripcion breve del cambio>`
-
 
 ---
 
@@ -141,11 +135,11 @@ Para mantener trazabilidad del autor y consistencia entre aportes, los mensajes 
 | `PRES` | Presentación |
 | `ICS` | Ingeniería y Calidad de Software |
 
-
 ## Criterios de Línea Base
+
 Definimos como críterios de línea base del repositorio, que la misma se establezca luego de la correción de dos trabajos prácticos considerando únicamente los prácticos evaluables. Esto lo decidimos ya que consideramos que es el momento correcto ya que contamos con los ítems de configuración validos y estables. Como equipo decidimos identificar a cada versión de la línea base, con nombres de planetas. Para garantizar el orden cronológico y la trazabilidad de las versiones, utilizaremos el formato `LB_v<Numero>_<Planeta>`, donde el número indicará la secuencia de la versión y los nombres de los planetas se asignarán según su orden de proximidad al Sol.
+
 Ejemplo:
 LB_v1.0_Mercurio (Línea Base 1),
 LB_v2.0_Venus (Línea Base 2),
 LB_v3.0_Tierra (Línea Base 3)
-
